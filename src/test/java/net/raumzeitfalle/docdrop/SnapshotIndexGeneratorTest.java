@@ -1,0 +1,108 @@
+package net.raumzeitfalle.docdrop;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import io.quarkus.qute.Template;
+import io.quarkus.test.junit.QuarkusTest;
+import jakarta.inject.Inject;
+import net.raumzeitfalle.docdrop.storage.SnapshotIndexGenerator;
+
+@QuarkusTest
+public class SnapshotIndexGeneratorTest extends TestArtifactStorage {
+    
+    private SnapshotIndexGenerator classUnderTest; 
+    
+    private Path targetDir;
+    
+    private final Configuration config = new Configuration();
+    
+    @Inject
+    private Template snapshotIndexTest;
+    
+    @BeforeAll
+    public static void prepare() throws Exception {
+        removeAll();
+        createSnapshot("group1", "artifact1", "version1", "snapshot1");
+        createEmptySnapshot("group1", "artifact1", "version1", "snapshot2");
+        createArtifact(createGroup("group2"), "artifactX");
+        createEmptySnapshot("group3", "artifact1", "version1", "snapshot2");
+        createSnapshot("group4", "artifact1", "version1", "snapshot1");
+        createSnapshot("group5", "artifact1", "version1", "snapshot1");
+        createSnapshot("group5", "artifact1", "version1", "snapshot2");
+    }
+    
+    @Test
+    void that_index_is_generated_with_for_same_version_and_multiple_snapshots() {
+        targetDir = Paths.get("TestData/01_artifacts_groups/group5/artifact1/version1");
+        config.artifactStorageRoot = Paths.get("TestData").toAbsolutePath().toString();
+        config.applicationName = "Application Name";
+        config.repositoryName = "Repository";
+        config.scmUrl = "http://gitbucket/DocDrop";
+        config.uploadUrl = "http://localhost:8080/upload.html";
+        config.bootstrapCssUrl = "http://localhost/dist/css/styles.css";
+
+        classUnderTest = new SnapshotIndexGenerator(targetDir, "group1", "artifact1");
+        classUnderTest.createIndex();
+        String result = classUnderTest.render(snapshotIndexTest.instance(), config);
+
+        String expected = """
+                <HTML>
+                <H1>Application Name</H1>
+                <H2>group1</H2>
+                <H3>artifact1</H3>
+                <H4>version1</H4>
+                <SPAN>Root: TestData/01_artifacts_groups/group5/artifact1/version1</SPAN>
+                <SPAN>HasParent: true</SPAN>
+                <SPAN>Upload URL: http://localhost:8080/upload.html</SPAN>
+                <SPAN>CSS URL: http://localhost/dist/css/styles.css</SPAN>
+                <SPAN>SCM URL: http://gitbucket/DocDrop</SPAN>
+                <SPAN>Repository: Repository</SPAN>
+                <UL>
+                <LI><a href="snapshot1">snapshot1</a></LI>
+                <LI><a href="snapshot2">snapshot2</a></LI>
+                </UL>
+                </HTML>
+                """;
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void that_index_is_generated_for_version_without_snapshot() throws Exception {
+        targetDir = Paths.get("TestData/01_artifacts_groups/group1/artifact1/version2");
+        config.artifactStorageRoot = Paths.get("TestData").toAbsolutePath().toString();
+        config.applicationName = "Application Name";
+        config.repositoryName = "Repository";
+        config.scmUrl = "http://gitbucket/DocDrop";
+        config.uploadUrl = "http://localhost:8080/upload.html";
+        config.bootstrapCssUrl = "http://localhost/dist/css/styles.css";
+
+        classUnderTest = new SnapshotIndexGenerator(targetDir, "group3", "artifact1");
+        classUnderTest.createIndex();
+        String result = classUnderTest.render(snapshotIndexTest.instance(), config);
+
+        String expected = """
+                <HTML>
+                <H1>Application Name</H1>
+                <H2>group3</H2>
+                <H3>artifact1</H3>
+                <H4>version2</H4>
+                <SPAN>Root: TestData/01_artifacts_groups/group1/artifact1/version2</SPAN>
+                <SPAN>HasParent: true</SPAN>
+                <SPAN>Upload URL: http://localhost:8080/upload.html</SPAN>
+                <SPAN>CSS URL: http://localhost/dist/css/styles.css</SPAN>
+                <SPAN>SCM URL: http://gitbucket/DocDrop</SPAN>
+                <SPAN>Repository: Repository</SPAN>
+                <P>No snapshots found.</P>
+                </HTML>
+                """;
+
+        assertEquals(expected, result);
+    }
+}

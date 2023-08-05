@@ -1,0 +1,29 @@
+{@net.raumzeitfalle.docdrop.Configuration config}
+{@net.raumzeitfalle.docdrop.storage.SnapshotIndexGenerator item}
+{@net.raumzeitfalle.docdrop.storage.SubDirectory dir}
+ {@java.util.List<net.raumzeitfalle.docdrop.storage.SubDirectory> dirs}
+<HTML>
+<H1>{config.applicationName}</H1>
+<H2>{item.groupId}</H2>
+<H3>{item.artifact}</H3>
+<H4>{item.name}</H4>
+<SPAN>Root: {item.dirString}</SPAN>
+<SPAN>HasParent: {item.hasParent}</SPAN>
+<SPAN>Upload URL: {config.uploadUrl}</SPAN>
+<SPAN>CSS URL: {config.bootstrapCssUrl}</SPAN>
+<SPAN>SCM URL: {config.scmUrl}</SPAN>
+<SPAN>Repository: {config.repositoryName}</SPAN>
+{#if dirs.isEmpty}
+<P>No snapshots found.</P>
+{#else}
+<UL>
+{#for dir in dirs}
+{#if dir.files > 0}
+<LI><a href="{dir.name}">{dir.name}</a></LI>
+{#else}
+<LI>{dir.name}</LI>
+{/if}
+{/for}
+</UL>
+{/if}
+</HTML>

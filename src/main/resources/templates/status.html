@@ -1,0 +1,80 @@
+<!doctype html>
+{@net.raumzeitfalle.docdrop.Configuration config}
+{@net.raumzeitfalle.docdrop.storage.ArtifactIndexGenerator item}
+{@net.raumzeitfalle.docdrop.storage.SubDirectory dir}
+{@net.raumzeitfalle.docdrop.Configuration config}
+{@java.lang.Integer jobs}
+{@java.lang.Integer index}
+{@java.lang.Integer ingest}
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="refresh" content="5; url=status.html">
+    <title>DocDrop Status</title>
+    <link href="{config.bootstrapCssUrl}" rel="stylesheet">
+    <link href="{config.docdropCssUrl}" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-sm sticky-top">
+        <div class="container-fluid">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{config.artifactsIndexUrl}">Groups</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{config.uploadUrl}">Upload artifact...</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <main>
+        <br>
+        <h1>Status</h1>
+        <table style="min-width: 400px">
+            <tr>
+                <th>Parameter</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>File store jobs</td>
+                <td>{jobs}</td>
+            </tr>
+            <tr>
+                <td>Index creation jobs</td>
+                <td>{index}</td>
+            </tr>
+            <tr>
+                <td>Ingested files</td>
+                <td>{ingest}</td>
+            </tr>
+        </table>
+        <br>
+        <h2>Cleanup</h2>
+        <div>
+            <form action="status.html" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="action" value="emptyIngestDir">
+                <button type="submit" class="btn btn-warning form-control">Clean Ingest Directory</button>
+            </form>
+        </div>
+                <br>
+        <h2>Index Update</h2>
+        <div>
+            <form action="status.html" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="action" value="recreateGroupIndex">
+                <button type="submit" class="btn btn-secondary form-control">Recreate Group Index</button>
+            </form>
+            <form action="status.html" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="action" value="recreateArtifactIndex">
+                <button type="submit" class="btn btn-secondary form-control">Recreate Artifact Index</button>
+            </form>
+            <form action="status.html" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="action" value="recreateVersionIndex">
+                <button type="submit" class="btn btn-secondary form-control">Recreate Version Index</button>
+            </form>
+        </div>
+        
+    </main>
+</body>
+</html>

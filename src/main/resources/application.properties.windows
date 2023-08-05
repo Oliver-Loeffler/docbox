@@ -1,0 +1,9 @@
+quarkus.http.limits.max-form-attribute-size=100M
+quarkus.http.limits.max-body-size=2048000K
+
+docdrop.repository.name=DocDrop
+docdrop.css.bootstrap.dist.url=http://localhost/dist/bootstrap-5.3.1/css/bootstrap.css
+docdrop.css.url=http://localhost/dist/docdrop.css
+docdrop.views.artifacts.index.url=http://localhost/artifacts
+docdrop.views.upload.url=http://localhost:8080/upload.html
+docdrop.artifact.storage.location=C:/Github/loefflo/docdrop_files

@@ -1,0 +1,23 @@
+{@net.raumzeitfalle.docdrop.Configuration config}
+{@net.raumzeitfalle.docdrop.storage.GroupIndexGenerator item}
+{@net.raumzeitfalle.docdrop.storage.SubDirectory dir}
+ {@java.util.List<net.raumzeitfalle.docdrop.storage.SubDirectory> dirs}
+<HTML>
+<H1>{config.applicationName}</H1>
+<H2>{item.name}</H2>
+<SPAN>Root: {item.dirString}</SPAN>
+<SPAN>HasParent: {item.hasParent}</SPAN>
+<SPAN>Upload URL: {config.uploadUrl}</SPAN>
+<SPAN>CSS URL: {config.bootstrapCssUrl}</SPAN>
+<SPAN>SCM URL: {config.scmUrl}</SPAN>
+<SPAN>Repository: {config.repositoryName}</SPAN>
+<UL>
+{#for dir in dirs}
+{#if dir.size > 0}
+<LI><a href="{dir.name}">{dir.name}</a> {dir.size} artifact(s)</LI>
+{#else}
+<LI>{dir.name}</LI>
+{/if}
+{/for}
+</UL>
+</HTML>
