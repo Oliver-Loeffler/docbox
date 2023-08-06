@@ -39,22 +39,37 @@ RUN rm -rf /etc/localtime && \
     echo TZ="Europe/Berlin" >> /etc/environment && \
     echo TZ="Europe/Berlin" >> /etc/profile
 
-RUN mkdir -p /src/docdrop
-
-ADD run.sh /
-ADD httpd.conf /etc/httpd/conf/httpd.conf
-ADD entrypoint.sh /
-ADD index.php /var/www/html/
-ADD css/docdrop.css /var/www/html/dist
-ADD js/darkmode.js /var/www/html/dist
-
 ENV TZ=Europe/Berlin
 ENV JAVA_HOME="/usr/lib/jvm/jdk-17.0.8+7"
+
+RUN  git clone https://github.com/Oliver-Loeffler/docdrop.git && \
+     cd docdrop && \
+     sh ./mvnw package -Dquarkus.package.type=uber-jar
+
+RUN mkdir -p /var/www/html/dist/ && \
+    mkdir -p /var/www/html/ingest && \
+    mkdir -p /var/www/html/artifacts \
+
+RUN cd install && \
+    wget "https://github.com/twbs/bootstrap/releases/download/v5.3.1/bootstrap-5.3.1-dist.zip" && \
+    mkdir -p /var/www/html/dist && \
+    unzip -o bootstrap-5.3.1-dist.zip -d /install && \
+    mv /install/bootstrap-5.3.1-dist /var/www/html/dist/bootstrap-5.3.1
+
+ADD ./css/docdrop.css /var/www/html/dist/
+ADD ./js/darkmode.js /var/www/html/dist/
+ADD ./index.php /var/www/html/
+
+COPY ./application.properties /docdrop/src/main/resources/
+COPY ./httpd.conf /etc/httpd/conf/httpd.conf
+
+ADD ./entrypoint.sh /
+
 CMD ["sh", "./entrypoint.sh"]
-#CMD ["top"]
 
 EXPOSE 80
 EXPOSE 8080
 
-VOLUME /var/www/html/
-VOLUME /src/docdrop
+VOLUME /var/www/html/artifacts/
+VOLUME /var/log/
+VOLUME /docdrop/
