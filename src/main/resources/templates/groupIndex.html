@@ -1,3 +1,22 @@
+<!--
+  #%L
+  docdrop
+  %%
+  Copyright (C) 2023 Oliver Loeffler, Raumzeitfalle.net
+  %%
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  #L%
+  -->
 <!doctype html>
 {@net.raumzeitfalle.docdrop.Configuration config}
 {@net.raumzeitfalle.docdrop.storage.GroupIndexGenerator item}
@@ -11,8 +30,15 @@
     <title>{config.applicationName} - {config.repositoryName}</title>
     <link href="{config.bootstrapCssUrl}" rel="stylesheet">
     <link href="{config.docdropCssUrl}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css" />
+    <style>
+        .github-fork-ribbon.right-top:before {
+            background-color: #f80;
+        }
+    </style>
 </head>
 <body>
+    <a class="github-fork-ribbon right-top fixed" href="https://github.com/Oliver-Loeffler/docdrop" data-ribbon="Fork me on GitHub" title="Fork me on GitHub">Fork me on GitHub</a>
     <nav class="navbar navbar-expand-sm sticky-top">
         <div class="container-fluid">
             <ul class="navbar-nav">
@@ -31,10 +57,10 @@
         <p>Documentation artifacts are categorized similar to build artifacts or dependencies.
         An example would look like following:</p>
         <table>
-            <tr><td>Group:</td><td>&quot;com.amtc.metro.geva&quot;</td></tr>
-            <tr><td>Artifact:</td><td>&quot;geva-core&quot;</td></tr>
-            <tr><td>Version:</td><td>&quot;20210831.12&quot;</td></tr>
-            <tr><td>Snapshot:</td><td>&quot;20210831173511655&quot;</td></tr>
+            <tr><td>Group:</td><td>&quot;net.raumzeifalle.fx&quot;</td></tr>
+            <tr><td>Artifact:</td><td>&quot;filechooser&quot;</td></tr>
+            <tr><td>Version:</td><td>&quot;v0.0.9&quot;</td></tr>
+            <tr><td>Snapshot:</td><td>&quot;20230801173511655&quot;</td></tr>
         </table><br>
         <p>
         The &quot;snapshot&quot; value is derived from the upload timestamp including fractions

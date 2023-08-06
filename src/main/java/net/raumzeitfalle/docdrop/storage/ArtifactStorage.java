@@ -1,3 +1,22 @@
+/*-
+ * #%L
+ * docdrop
+ * %%
+ * Copyright (C) 2023 Oliver Loeffler, Raumzeitfalle.net
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
 package net.raumzeitfalle.docdrop.storage;
 
 import java.io.IOException;
@@ -8,7 +27,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiConsumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -18,26 +36,25 @@ import io.smallrye.common.annotation.Blocking;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import net.raumzeitfalle.docdrop.Configuration;
-import net.raumzeitfalle.docdrop.utils.SimpleUntarGz;
-import net.raumzeitfalle.docdrop.utils.SimpleUnzip;
+import net.raumzeitfalle.docdrop.commands.UnpackCommand;
 
 @Singleton
 public class ArtifactStorage {
-    
+
     Logger LOG = Logger.getLogger(ArtifactStorage.class.getName());
-    
+
     @Inject
     Configuration configuration;
-        
+
     public ArtifactStorage() {
-        
+
     }
 
     @Blocking
-    public void store(Artifact input) {
+    public Optional<Path> store(Artifact input) {
         try {
             var storage = prepareStorage(input);
-            distribute(input,storage);
+            return distribute(input, storage);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -55,76 +72,36 @@ public class ArtifactStorage {
         Files.createDirectories(timedDir);
         return timedDir;
     }
-    
+
     @Blocking
     public Optional<Path> distribute(Artifact artifact, java.nio.file.Path storage) throws IOException {
-        LOG.log(Level.INFO, "Received atrifact for ingestion.");
-        if (artifact.sourceFileName().toLowerCase().endsWith("-javadoc.jar")) {
-            LOG.log(Level.INFO, "Javadoc artifact detected.");
-            return distributeArtifact(artifact, storage, this::decompressZip);
-        } else if (artifact.sourceFileName().toLowerCase().endsWith(".tar.gz")) {
-            LOG.log(Level.INFO, "Compressed Tarball artifact detected.");
-            return distributeArtifact(artifact, storage, this::decompressTarGz);
-        } else if (artifact.sourceFileName().toLowerCase().endsWith(".tar")) {
-            LOG.log(Level.INFO, "Tarball artifact detected.");
-            return distributeArtifact(artifact, storage, this::unpackTar);
-        } else if (artifact.sourceFileName().toLowerCase().endsWith(".zip")) {
-            LOG.log(Level.INFO, "ZIP artifact detected.");
-            return distributeArtifact(artifact, storage, this::decompressZip);
-        }
-        return Optional.empty();
-    }
-
-    private Optional<Path> distributeArtifact(Artifact artifact, java.nio.file.Path storage, BiConsumer<Path, Path> decompressor) throws IOException {
+        LOG.log(Level.INFO, "Received artifact for ingestion.");
         Path source = artifact.file();
         Path target = storage.resolve(artifact.sourceFileName());
-        decompressor.accept(source, target);
-        
-        LOG.log(Level.INFO, "Copying artifact into snapshot directory: " + target);
-        Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
 
-        LOG.log(Level.INFO, "Deleting ingested file: " + source);
-        Files.deleteIfExists(source);
+        Optional<UnpackCommand> unpackCommand = UnpackCommand.fromArtifact(artifact);
+        if (unpackCommand.isEmpty()) {
+            LOG.log(Level.INFO, "Dropping unsupported artifact type.");
+            deleteIngestedArtifact(source);
+            return Optional.empty();
+        }
+
+        unpackCommand.get()
+                     .configure(configuration)
+                     .accept(source, storage);
+        moveArtifact(source, target);
+        deleteIngestedArtifact(source);
         return Optional.of(target);
     }
 
-    private void decompressZip(Path source, Path target) {
-        try {
-            LOG.log(Level.INFO, "Extracting: [{0}] into [{1}]", new Object[] {source.getFileName(), target.getParent()});
-            new SimpleUnzip(source, target.getParent()).exec();
-            LOG.log(Level.INFO, "Extracted at least {0} files,", target.getParent().toFile().listFiles().length);
-        } catch (IOException ioe) {
-            LOG.log(Level.SEVERE, "File Handling Error!", ioe);
-        } catch (InterruptedException ie) {
-            Thread.currentThread().interrupt();
-            LOG.log(Level.SEVERE, "Unzip Thread Interrupted!", ie);
-        }
+    private void moveArtifact(Path source, Path target) throws IOException {
+        LOG.log(Level.INFO, "Copying artifact into snapshot directory: " + target.getParent());
+        Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
     }
-    
-    private void decompressTarGz(Path source, Path target) {
-        try {
-            LOG.log(Level.INFO, "Extracting: [{0}] into [{1}]", new Object[] {source.getFileName(), target.getParent()});
-            new SimpleUntarGz(source, target.getParent()).exec();
-            LOG.log(Level.INFO, "Extracted at least {0} files,", target.getParent().toFile().listFiles().length);
-        } catch (IOException ioe) {
-            LOG.log(Level.SEVERE, "File Handling Error!", ioe);
-        } catch (InterruptedException ie) {
-            Thread.currentThread().interrupt();
-            LOG.log(Level.SEVERE, "Unzip Thread Interrupted!", ie);
-        }
-    }
-    
-    private void unpackTar(Path source, Path target) {
-        try {
-            LOG.log(Level.INFO, "Extracting: [{0}] into [{1}]", new Object[] {source.getFileName(), target.getParent()});
-            new SimpleUntarGz(source, target.getParent()).execUntar();
-            LOG.log(Level.INFO, "Extracted at least {0} files,", target.getParent().toFile().listFiles().length);
-        } catch (IOException ioe) {
-            LOG.log(Level.SEVERE, "File Handling Error!", ioe);
-        } catch (InterruptedException ie) {
-            Thread.currentThread().interrupt();
-            LOG.log(Level.SEVERE, "Unzip Thread Interrupted!", ie);
-        }
+
+    private void deleteIngestedArtifact(Path source) throws IOException {
+        LOG.log(Level.INFO, "Deleting ingested file: " + source);
+        Files.deleteIfExists(source);
     }
 
     public List<String> collectGroups() {
@@ -135,6 +112,60 @@ public class ArtifactStorage {
                         .collect(Collectors.toList());
         } catch (Exception e) {
             return Collections.emptyList();
+        }
+    }
+
+    public void dropArtifacts() {
+        Path artifactsRoot = configuration.getArtifactsDirectory();
+        try (Stream<java.nio.file.Path> items = Files.list(artifactsRoot)) {
+            items.forEach(this::delete);
+            LOG.log(Level.INFO, "Dropped repository contents.");
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE, "Deletion of repository item failed.", e);
+        }
+    }
+
+    public void dropIngestedArtifacts() {
+        LOG.log(Level.INFO, "Deleting ingested files...");
+        Path artifactsRoot = configuration.getIngestDirectory();
+        try (Stream<java.nio.file.Path> items = Files.list(artifactsRoot)) {
+            items.forEach(this::delete);
+            LOG.log(Level.INFO, "Dropped ingested files.");
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE, "Deletion of ingested files failed.", e);
+        }
+    }
+
+    private void delete(Path file) {
+        try {
+            if (Files.isDirectory(file)) {
+                LOG.log(Level.INFO, "Deleting item: {0}", file.toAbsolutePath());
+                deleteDirectory(file);
+            } else {
+                deleteFile(file);
+            }
+        } catch (IOException error) {
+            throw new UncheckedIOException(error);
+        }
+    }
+
+    private void deleteFile(Path file) throws IOException {
+        try {
+            Files.deleteIfExists(file);
+        } catch (java.nio.file.NoSuchFileException noSuchFile) {
+            /* Thats actually no problem if this happens by accident. */
+        }
+    }
+
+    private void deleteDirectory(Path directory) throws IOException {
+        try (Stream<java.nio.file.Path> items = Files.list(directory)) {
+            List<Path> entries = items.toList();
+            for (Path entry : entries) {
+                delete(entry);
+            }
+            Files.delete(directory);
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE, "Deletion of directory failed.", e);
         }
     }
 

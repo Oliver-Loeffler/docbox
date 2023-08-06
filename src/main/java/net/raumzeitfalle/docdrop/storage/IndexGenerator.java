@@ -1,3 +1,22 @@
+/*-
+ * #%L
+ * docdrop
+ * %%
+ * Copyright (C) 2023 Oliver Loeffler, Raumzeitfalle.net
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
 package net.raumzeitfalle.docdrop.storage;
 
 import java.io.IOException;
@@ -64,7 +83,7 @@ public abstract sealed class IndexGenerator permits GroupIndexGenerator,
         return name;
     }
 
-    public void createIndex() {
+    public int createIndex() {
         LOG.log(Level.FINE, "Analysing directory [{0}]", directory);
         try (Stream<java.nio.file.Path> items = Files.list(directory)) {
             List<SubDirectory> children = items.filter(IndexGenerator::isValidDirectory)
@@ -76,14 +95,16 @@ public abstract sealed class IndexGenerator permits GroupIndexGenerator,
         } catch (Exception e) {
             LOG.log(Level.SEVERE, "Index generation failed!", e);
         }
+        return this.size;
     }
     
     public abstract String render(TemplateInstance templateInstance, Configuration config);
     
-    public void createIndexHtml(Template template, Configuration config) {
-        createIndex();
+    public int createIndexHtml(Template template, Configuration config) {
+        int indexed = createIndex();
         String html = render(template.instance(), config);
         writeIndex(html, config);
+        return indexed;
     }
 
     public void writeIndex(String html, Configuration config) {
@@ -94,6 +115,17 @@ public abstract sealed class IndexGenerator permits GroupIndexGenerator,
             Files.write(index, html.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE);
         } catch (IOException e) {
             LOG.log(Level.SEVERE, "Failed to write index file!", e);
+        }
+    }
+    
+    public void writeHtaccess(String htaccessText) {
+        var index = this.directory.resolve(".htaccess");
+        LOG.log(Level.INFO, "Writing .htaccess file: [{0}]", index);
+        try {
+            Files.deleteIfExists(index);
+            Files.write(index, htaccessText.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE);
+        } catch (IOException e) {
+            LOG.log(Level.SEVERE, "Failed to write .htaccess file!", e);
         }
     }
     

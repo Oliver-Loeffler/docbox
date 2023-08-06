@@ -1,3 +1,22 @@
+/*-
+ * #%L
+ * docdrop
+ * %%
+ * Copyright (C) 2023 Oliver Loeffler, Raumzeitfalle.net
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
 package net.raumzeitfalle.docdrop;
 
 import java.util.logging.Level;
@@ -16,6 +35,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import net.raumzeitfalle.docdrop.storage.ArtifactQueue;
+import net.raumzeitfalle.docdrop.storage.ArtifactStatistics;
 import net.raumzeitfalle.docdrop.storage.ArtifactStorage;
 
 @ApplicationScoped
@@ -34,6 +54,9 @@ public class StatusController {
     @Inject
     ArtifactStorage artifactStorage;
     
+    @Inject
+    ArtifactStatistics statistics;
+    
     @Location("status.html")
     Template template;
     
@@ -46,7 +69,8 @@ public class StatusController {
                        .data("config", configuration)
                        .data("jobs", jobs)
                        .data("index", index)
-                       .data("ingest", ingestedFiles);
+                       .data("ingest", ingestedFiles)
+                       .data("statistics", statistics);
     }
     
     @POST
@@ -55,7 +79,7 @@ public class StatusController {
         LOG.log(Level.INFO, "Received action request: {0}", input);
         switch (input.action) {
             case "emptyIngestDir": 
-                artifactsQueue.emptyIngestDirectory();
+                artifactsQueue.dropIngestedArtifacts();
                 break;
             case "recreateGroupIndex":
                 artifactsQueue.recreateGroupIndex();
@@ -65,6 +89,12 @@ public class StatusController {
                 break;
             case "recreateVersionIndex":
                 artifactsQueue.recreateVersionIndex();
+                break;
+            case "recreateSnapshotIndex":
+                artifactsQueue.recreateSnapshotIndex();
+                break;
+            case "emptyArtifactsDir":
+                artifactsQueue.dropArtifacts();
                 break;
         }
         return get();

@@ -1,0 +1,1 @@
+docker exec -it --user root apache /bin/bash

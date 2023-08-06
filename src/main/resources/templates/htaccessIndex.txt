@@ -1,2 +1,3 @@
+{@java.lang.String redirect}
 RewriteEngine On
-RewriteRule ^$ {new} [L]
+RewriteRule latest {redirect} [L]

@@ -1,39 +1,95 @@
 # docdrop
 
-## Multipart
+## Sharing documentation artifacts from CI/CD
 
-## Intro
+## Concept:
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+* Artifacts are structured by group name, artifact name, artifact version and snapshot
+* `-javadoc.jar`, `.zip`, `.tar` and `.tar.gz` files are accepted
+* Each artifact will be accessible via unique URL like `http://localhost/artifacts/group/artifact/version/snapshot/`
+* There is a generic shortcut URL for the latest version of each artifact: `http://localhost/artifacts/group/artifact/version/latest/`
+* There are index pages:
+    * Group index: lists all artifacts within a group
+    * Artifact index: lists all versions of an artifact within a group
+    * Version index: lists all snapshots of a particular artifact version
+    * An upload page: http://localhost:8080/upload.html
+    * A status page: http://localhost:8080/status.html
 
-If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
+## Setup:
 
-## Config
+* Artifacts are supposed to be served by an Apache httpd server (port 80) which respects created `.htaccess` files.
+* A Quarkus web app running on port 8080 allows uploads and basic maintenance via `status.html` and `upload.html`
+* The `upload.html` also describes how to publish artifacts via cURL.
 
-ENV:
+## Backend
 
-```
-DOCDROP_ARTIFACT_STORAGE_LOCATION=C:\Github\loefflo\docdrop_files   (default: artifacts)
-```
+* There is no database.
+* Quarkus uses either `7za.exe` on Windows or `unzip` and `tar` on Linux.
+* Its all not yet tested on MacOS or other systems.
+* 7Zip Extra for Windows: https://www.7-zip.org/a/7z2301-extra.7z
 
-Application.properties
+## Configuration
 
-```
-docdrop.views.upload.url=http://localhost:8080/upload.html          
-docdrop.artifact.storage.location=C:/Github/loefflo/docdrop_files   (default: artifacts)
-```
+* The application is configured using Quarkus `application.properties`
 
-## Running the application in dev mode
+Following options exist:
 
-You can run your application in dev mode that enables live coding using:
-```shell script
-./mvnw compile quarkus:dev
-C:\Github\loefflo\docdrop>mvnw compile quarkus:dev
-```
+| Configuration key                   | Description                       | Example     |
+|-------------------------------------|-----------------------------------|-------------|
+| `docdrop.repository.name`           | App name                          | DocDrop     |
+| `docdrop.repository.index.file`     | Name of directory index files.    | index.html  |
+| `docdrop.css.bootstrap.dist.url`    | full URL of `bootstrap.css`       |             |
+| `docdrop.css.url`                   | DocDrop custom CSS: `docdrop.css` |             |
+| `docdrop.views.artifacts.index.url` | Artifact index root URL           | http://localhost/artifacts        |
+| `docdrop.views.upload.url`          | Location of upload.html           | http://localhost:8080/upload.html |
+| `docdrop.views.status.url`          | Location of status.html           | http://localhost:8080/status.html |
+| `docdrop.artifact.storage.location` | Volume for artifact storage       | `C:\Temp`         |
+| `docdrop.commands.7z.location`      | 7za Executable                    | `C:\Test\7za.exe` |
+| `docdrop.commands.tar.location`     | TAR Executable                    | `/usr/bin/tar`    |
+| `docdrop.commands.unzip.location`   | UNZIP Executable                  | `/usr/bin/unzip`  |
+
+## Running DocDrop
+
+**_Prerequisite_**:
+* Apache httpd must be running and serving contents of `docdrop.artifact.storage.location` 
+
+Starting the Web App:
+* Change into project directory and run `./mvnw compile quarkus:dev`
+* Quarkus is configured so that it also serves from within a Docker container.
+* The developer UI is also available:  http://localhost:8080/q/dev/
 
 > **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at http://localhost:8080/q/dev/.
 
-## Packaging and running the application
+
+## Screenshots
+
+### Uploading Artifacts
+![upload-form](doc/images/upload-form.png)
+
+### Group Index
+
+![group-index](doc/images/group-index.png)
+
+### Artifact Index
+
+![artifact-index-1](doc/images/artifact-index-1.png)
+
+![artifact-index-2](doc/images/artifact-index-2.png)
+
+### Version Index
+
+![version-index](doc/images/version-index.png)
+
+### Index by Snapshot
+
+![snapshot-index](doc/images/snapshot-index.png)
+
+### Status and Maintenance
+
+![status-form](doc/images/status-form.png)
+
+
+## Packaging the application
 
 The application can be packaged using:
 ```shell script
@@ -72,10 +128,14 @@ If you want to learn more about building native executables, please consult http
 - RESTEasy Classic Multipart ([guide](https://quarkus.io/guides/rest-json#multipart-support)): Multipart support for RESTEasy Classic
 - RESTEasy Classic ([guide](https://quarkus.io/guides/resteasy)): REST endpoint framework implementing Jakarta REST and more
 
-## Provided Code
-
 ### RESTEasy JAX-RS
 
 Easily start your RESTful Web Services
 
 [Related guide section...](https://quarkus.io/guides/getting-started#the-jax-rs-resources)
+
+## Attributions
+
+The very nice Fork-Me-At-Github ribbon is made by: Simon Whitaker
+
+https://simonwhitaker.github.io/github-fork-ribbon-css/
