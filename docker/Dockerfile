@@ -71,5 +71,6 @@ EXPOSE 80
 EXPOSE 8080
 
 VOLUME /var/www/html/artifacts/
+VOLUME /var/www/html/dist/
 VOLUME /var/log/
 VOLUME /docdrop/
