@@ -88,6 +88,9 @@ Starting the Web App:
 
 ![status-form](doc/images/status-form.png)
 
+### Video
+
+https://github.com/Oliver-Loeffler/docdrop/assets/22102800/1e221ef2-dc91-4c2b-a7b7-f1bea0108cc7
 
 ## Packaging the application
 
