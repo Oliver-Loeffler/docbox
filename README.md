@@ -68,7 +68,7 @@ docker run -it --name docdrop -p 80:80 -p 8080:8080 -d raumzeitfalle/docdrop:0.1
 ```
 
 When operated on a different port than 8080 for Quarkus or 80 for httpd, a configuration change is needed.
-The Quarkus configuration can be changed in the developers GUI `http://localhost:8080/q/dev-ui/configuration-form-editor` (well repplace port 8080 accordingl).
+The Quarkus configuration can be changed in the developers GUI `http://localhost:8080/q/dev-ui/configuration-form-editor` (replace port 8080 accordingly).
 There the settings `docdrop.views.upload.url` and `docdrop.views.status.url` require an update as well.
 As the index files are just basic static files, those need to be updated as well. This can be achieved on the `http://localhost:8080/status.html` page. All index levels can be updated there automatically. Depending on the amount of artifacts stored, this may take a while. The changes will not be effective immediately but eventually the will be.
 
