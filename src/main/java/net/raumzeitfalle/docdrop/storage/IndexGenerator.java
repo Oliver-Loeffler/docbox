@@ -88,6 +88,7 @@ public abstract sealed class IndexGenerator permits GroupIndexGenerator,
         try (Stream<java.nio.file.Path> items = Files.list(directory)) {
             List<SubDirectory> children = items.filter(IndexGenerator::isValidDirectory)
                                                .map(SubDirectory::new)
+                                               .sorted(SubDirectory.byName())
                                                .map(SubDirectory::countChildren)
                                                .collect(Collectors.toList());
             this.dirs = children;

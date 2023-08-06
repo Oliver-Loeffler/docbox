@@ -69,7 +69,6 @@ public class GroupIndexGeneratorTest extends TestArtifactStorage {
         String result = classUnderTest.render(groupIndexTest.instance(), config).replace("<!doctype html>", "").strip();
 
         String expected = """
-                
                 <HTML>
                 <H1>Application Name</H1>
                 <H2>Group IDs</H2>
@@ -86,8 +85,7 @@ public class GroupIndexGeneratorTest extends TestArtifactStorage {
                 <LI><a href="group4">group4</a> 1 artifact(s)</LI>
                 <LI><a href="group5">group5</a> 1 artifact(s)</LI>
                 </UL>
-                </HTML>
-                """.strip();
+                </HTML>""";
 
         assertEquals(expected.replace("\r\n", "\n"), result.replace("\r\n", "\n"));
     }
