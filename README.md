@@ -60,6 +60,17 @@ Starting the Web App:
 
 > **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at http://localhost:8080/q/dev/.
 
+There is now a first Docker image available. 
+
+```shell
+docker pull raumzeitfalle/docdrop:0.1
+docker run -it --name docdrop -p 80:80 -p 8080:8080 -d raumzeitfalle/docdrop:0.1
+```
+
+When operated on a different port than 8080 for Quarkus or 80 for httpd, a configuration change is needed.
+The Quarkus configuration can be changed in the developers GUI `http://localhost:8080/q/dev-ui/configuration-form-editor` (replace port 8080 accordingly).
+There the settings `docdrop.views.upload.url` and `docdrop.views.status.url` require an update as well.
+As the index files are just basic static files, those need to be updated as well. This can be achieved on the `http://localhost:8080/status.html` page. All index levels can be updated there automatically. Depending on the amount of artifacts stored, this may take a while. The changes will not be effective immediately but eventually the will be.
 
 ## Screenshots
 
@@ -88,6 +99,20 @@ Starting the Web App:
 
 ![status-form](doc/images/status-form.png)
 
+### Video
+
+Conveniently host Docdrop as a container and publish your own documentation artifacts either via HTML form or via POST request using cURL. Supports `.zip`, `.tar`, `.tar.gz` and `-javadoc.jar` .
+Boundary condition: the artifacts shoul have an `index.html` in their root otherwise the httpd would not know what to show.
+
+```shell
+curl -v -F group="net.opensource" \
+        -F artifact="library" \
+        -F version="v1.0.2" \
+        -F file=@"c:\mylibrary-javadoc.jar" \
+        http://localhost:8080/upload
+```
+
+https://github.com/Oliver-Loeffler/docdrop/assets/22102800/1e221ef2-dc91-4c2b-a7b7-f1bea0108cc7
 
 ## Packaging the application
 
