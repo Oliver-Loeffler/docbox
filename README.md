@@ -101,8 +101,8 @@ As the index files are just basic static files, those need to be updated as well
 
 ### Video
 
-Conveniently host Docdrop as a container and publish your own documentation artifacts either via HTML form or via POST request using cURL. Supports `.zip`, `.tar`, `.tar.gz` and `-javadoc.jar` .
-Boundary condition: the artifacts shoul have an `index.html` in their root otherwise the httpd would not know what to show.
+Conveniently host Docdrop as a container and publish your own documentation artifacts either via HTML form or via POST request using cURL. Supports `.zip`, `.tar`, `.tar.gz` and `-javadoc.jar`.
+Boundary condition: the artifacts shoul have an `index.html` in their root otherwise the httpd would not know what to show. The case that all relevant contents is archived in one sub directory is handled by creating a meta tag based forward whe detected.
 
 ```shell
 curl -v -F group="net.opensource" \
