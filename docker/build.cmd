@@ -1,1 +1,1 @@
-docker build -f Dockerfile -t net/raumzeitfalle/docdrop:0.1 .
+docker build -f Dockerfile -t net/raumzeitfalle/docdrop:0.2 .
