@@ -21,9 +21,11 @@ package net.raumzeitfalle.docdrop.storage;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -41,10 +43,23 @@ import net.raumzeitfalle.docdrop.commands.UnpackCommand;
 @Singleton
 public class ArtifactStorage {
 
-    Logger LOG = Logger.getLogger(ArtifactStorage.class.getName());
+    private static final Logger LOG = Logger.getLogger(ArtifactStorage.class.getName());
 
     @Inject
     Configuration configuration;
+
+    private static final String META_FORWARD_TEMPLATE = """
+            <!doctype html>
+            <head>
+                <meta charset="UTF-8">
+                <meta http-equiv="refresh" content="0; {folder}/">
+                <title>Forward into {folder}/</title>
+            </head>
+            <body>
+            <a href="{folder}/">Forward into: {folder}</a>
+            </body>
+            </html>
+            """;
 
     public ArtifactStorage() {
 
@@ -89,9 +104,26 @@ public class ArtifactStorage {
         unpackCommand.get()
                      .configure(configuration)
                      .accept(source, storage);
+        
+        generateMetaForwardForEmptyDirectory(target.getParent());
+        
         moveArtifact(source, target);
         deleteIngestedArtifact(source);
         return Optional.of(target);
+    }
+
+    private void generateMetaForwardForEmptyDirectory(Path target) {
+        try (Stream<Path> directory = Files.list(target)) {
+            List<Path> files = directory.toList();
+            if (files.size() == 1 && Files.isDirectory(files.get(0))) {
+                LOG.log(Level.INFO, "Createing meta forward via index.html in [{0}]", target);
+                String subDir = files.get(0).getFileName().toString();
+                String forward = META_FORWARD_TEMPLATE.replace("{folder}", subDir);
+                Files.write(target.resolve("index.html"), forward.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE);
+            }
+        } catch (IOException ioError) {
+            LOG.log(Level.WARNING, "Failed to create meta forward via index.html in: [%s]".formatted(target), ioError);
+        }
     }
 
     private void moveArtifact(Path source, Path target) throws IOException {
