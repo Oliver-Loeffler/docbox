@@ -20,10 +20,7 @@ RUN dnf upgrade --refresh -y --nogpgcheck && \
         nano \
         httpd \
         tar \
-        unzip \
-        php -y
-
-RUN mkdir -p /var/run/php-fpm
+        unzip -y
 
 RUN mkdir install && \
     cd install && \
@@ -35,9 +32,7 @@ RUN mkdir install && \
     ln -s /usr/lib/jvm/jdk-17.0.8+7/bin/java /usr/local/bin/java
 
 RUN rm -rf /etc/localtime && \
-    ln -s /usr/share/zoneinfo/Europe/Berlin /etc/localtime && \
-    echo TZ="Europe/Berlin" >> /etc/environment && \
-    echo TZ="Europe/Berlin" >> /etc/profile
+    ln -s /usr/share/zoneinfo/Europe/Berlin /etc/localtime
 
 ENV TZ=Europe/Berlin
 ENV JAVA_HOME="/usr/lib/jvm/jdk-17.0.8+7"
@@ -58,7 +53,7 @@ RUN cd install && \
 
 ADD ./css/docdrop.css /var/www/html/dist/
 ADD ./js/darkmode.js /var/www/html/dist/
-ADD ./index.php /var/www/html/
+ADD ./index.html /var/www/html/
 
 COPY ./application.properties /docdrop/src/main/resources/
 COPY ./httpd.conf /etc/httpd/conf/httpd.conf

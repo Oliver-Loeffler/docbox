@@ -33,9 +33,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta http-equiv="refresh" content="5; url=status.html">
     <title>DocDrop Status</title>
-    <link href="{config.bootstrapCssUrl}" rel="stylesheet">
-    <link href="{config.docdropCssUrl}" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css" />
+    <link href="{config.getCssBootstrapDistUrl()}" rel="stylesheet">
+    <link href="{config.getCssDocdropUrl}" rel="stylesheet">
+    <link rel="stylesheet" href="{config.githubForkCssUrl}" />
     <style>
         .github-fork-ribbon.right-top:before {
             background-color: #f80;
@@ -48,10 +48,10 @@
         <div class="container-fluid">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="{config.artifactsIndexUrl}">Groups</a>
+                    <a class="nav-link" href="{config.getArtifactsIndexUrl()}">Groups</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{config.uploadUrl}">Upload artifact...</a>
+                    <a class="nav-link" href="{config.getUploadUrl()}">Upload artifact...</a>
                 </li>
             </ul>
         </div>

@@ -1,1 +1,1 @@
-docker build --no-cache -f Dockerfile -t net/raumzeitfalle/docdrop:0.2 .
+docker build --no-cache -f Dockerfile -t net/raumzeitfalle/docdrop:0.3 .

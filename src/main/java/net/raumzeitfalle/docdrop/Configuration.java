@@ -28,22 +28,25 @@ import net.raumzeitfalle.docdrop.commands.Platform;
 
 @Singleton
 public class Configuration {
-    @ConfigProperty(name = "docdrop.views.upload.url", defaultValue = "http://localhost:8080/upload.html")
+    @ConfigProperty(name = "docdrop.host.urk", defaultValue = "http://localhost")
+    public String hostUrl; 
+    
+    @ConfigProperty(name = "docdrop.views.upload.url", defaultValue = "/upload.html")
     public String uploadUrl;
 
-    @ConfigProperty(name = "docdrop.views.status.url", defaultValue = "http://localhost:8080/status.html")
+    @ConfigProperty(name = "docdrop.views.status.url", defaultValue = "/status.html")
     public String statusUrl;
 
-    @ConfigProperty(name = "docdrop.views.artifacts.index.url", defaultValue = "http://localhost/artifacts")
+    @ConfigProperty(name = "docdrop.views.artifacts.index.url", defaultValue = "/artifacts")
     public String artifactsIndexUrl;
 
     @ConfigProperty(name = "docdrop.artifact.storage.location", defaultValue = "data")
     public String artifactStorageRoot;
 
-    @ConfigProperty(name = "docdrop.css.bootstrap.dist.url")
+    @ConfigProperty(name = "docdrop.css.bootstrap.dist.url", defaultValue = "/dist/bootstrap-5.3.1/css/bootstrap.css")
     public String bootstrapCssUrl;
 
-    @ConfigProperty(name = "docdrop.css.url")
+    @ConfigProperty(name = "docdrop.css.url", defaultValue = "/dist/docdrop.css")
     public String docdropCssUrl;
 
     @ConfigProperty(name = "docdrop.commands.7z.location", defaultValue = "C:\\Github\\loefflo\\docdrop\\Binaries\\Windows\\7z\\7za.exe")
@@ -66,6 +69,9 @@ public class Configuration {
 
     @ConfigProperty(name = "docdrop.scm.url", defaultValue = "http://gitbucket/docdrop")
     public String scmUrl;
+    
+    @ConfigProperty(name = "docdrop.css.forkmegit.url", defaultValue = "https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css")
+    public String githubForkCssUrl;
 
     public Path getArtifactsDirectory() {
         return Path.of(artifactStorageRoot).resolve("artifacts");
@@ -74,6 +80,27 @@ public class Configuration {
     public Path getIngestDirectory() {
         return Path.of(artifactStorageRoot).resolve("ingest");
     }
+    
+    public String getUploadUrl() {
+        return hostUrl+uploadUrl;
+    }
+    
+    public String getStatusUrl() {
+        return hostUrl+statusUrl;
+    }
+
+    public String getArtifactsIndexUrl() {
+        return hostUrl+artifactsIndexUrl;
+    }
+    
+    public String getCssBootstrapDistUrl() {
+        return hostUrl+bootstrapCssUrl;
+    }
+    
+    public String getCssDocdropUrl() {
+        return hostUrl+docdropCssUrl;
+    }
+
 
     public Platform platform = Platform.get();
 
