@@ -104,9 +104,9 @@ public class ArtifactStorage {
         unpackCommand.get()
                      .configure(configuration)
                      .accept(source, storage);
-        
+
         generateMetaForwardForEmptyDirectory(target.getParent());
-        
+
         moveArtifact(source, target);
         deleteIngestedArtifact(source);
         return Optional.of(target);

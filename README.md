@@ -64,7 +64,7 @@ There is now a first Docker image available.
 
 ```shell
 docker pull raumzeitfalle/docdrop:0.1
-docker run -it --name docdrop -p 80:80 -p 8080:8080 -d raumzeitfalle/docdrop:0.1
+docker run -it --name docdrop -p 80:80 -p 8080:8080 -d raumzeitfalle/docdrop:0.2
 ```
 
 When operated on a different port than 8080 for Quarkus or 80 for httpd, a configuration change is needed.
