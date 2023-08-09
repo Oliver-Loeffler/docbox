@@ -1,20 +1,26 @@
+quarkus.log.console.enable=true
+quarkus.log.console.format=%d{yyyy-MM-dd HH:mm:ss} %-5p [%c] (%t) %s%e%n
+quarkus.log.console.level=WARN
+
+quarkus.log.file.enable=true
+quarkus.log.file.level=ALL
+quarkus.log.file.path=/var/log/docdrop/docdrop.log
+quarkus.log.file.format=%d{yyyy-MM-dd HH:mm:ss} %-5p [%c] (%t) %s%e%n
+quarkus.log.file.rotation.max-file-size=10M
+quarkus.log.file.rotation.max-backup-index=10
+
 quarkus.http.limits.max-form-attribute-size=100M
 quarkus.http.limits.max-body-size=2048000K
 quarkus.http.host=0.0.0.0
 
+docdrop.host.url=${DOCDROP_HOSTURL:http://localhost}
 docdrop.repository.name=DocDrop
 docdrop.application.name=DocDrop
 docdrop.repository.index.file=index.html
 
-docdrop.css.bootstrap.dist.url=http://localhost/dist/bootstrap-5.3.1/css/bootstrap.css
-docdrop.css.url=http://localhost/dist/docdrop.css
-
-docdrop.views.artifacts.index.url=http://localhost/artifacts
-docdrop.views.upload.url=http://localhost:8080/upload.html
-docdrop.views.status.url=http://localhost:8080/status.html
-
 docdrop.artifact.storage.location=/var/www/html/
-
-docdrop.commands.7z.location=C:/Github/loefflo/docdrop/Binaries/Windows/7z/7za.exe
+docdrop.commands.7z.location=C:/Program Files/7-Zip/7z.exe
 docdrop.commands.tar.location=/usr/bin/tar
 docdrop.commands.unzip.location=/usr/bin/unzip
+
+
