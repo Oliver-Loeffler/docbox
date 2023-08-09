@@ -29,11 +29,11 @@ public enum Platform {
     
     public static Platform from(String osName) {
         if (osName != null) {
+        	if (osName.toLowerCase().contains("nux")) {
+        		return LINUX;
+        	}
             if (osName.toLowerCase().contains("win")) {
                 return WINDOWS;
-            }
-            if (osName.toLowerCase().contains("nux")) {
-                return LINUX;
             }
             return OTHER;
         }
@@ -44,8 +44,8 @@ public enum Platform {
     
     public static Platform get() {
         if (thisSystem == null) {
-            Logger.getLogger(Platform.class.getName()).log(Level.INFO, "Detected OS: {0}", thisSystem);
             thisSystem = Platform.from(System.getProperty("os.name").toLowerCase());
+            Logger.getLogger(Platform.class.getName()).log(Level.INFO, "Detected OS: {0}", thisSystem);
         }
         return thisSystem;
     }
