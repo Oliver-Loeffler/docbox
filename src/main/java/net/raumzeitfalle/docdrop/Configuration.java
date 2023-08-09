@@ -24,11 +24,11 @@ import java.nio.file.Path;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import jakarta.inject.Singleton;
-import net.raumzeitfalle.docdrop.commands.Platform;
 
 @Singleton
 public class Configuration {
-    @ConfigProperty(name = "docdrop.host.urk", defaultValue = "http://localhost")
+
+    @ConfigProperty(name = "docdrop.host.url")
     public String hostUrl; 
     
     @ConfigProperty(name = "docdrop.views.upload.url", defaultValue = "/upload.html")
@@ -48,8 +48,8 @@ public class Configuration {
 
     @ConfigProperty(name = "docdrop.css.url", defaultValue = "/dist/docdrop.css")
     public String docdropCssUrl;
-
-    @ConfigProperty(name = "docdrop.commands.7z.location", defaultValue = "C:\\Github\\loefflo\\docdrop\\Binaries\\Windows\\7z\\7za.exe")
+    
+    @ConfigProperty(name = "docdrop.commands.7z.location", defaultValue = "C:\\Program Files\\7-Zip\\7z.exe")
     public String commandSevenZipLocation;
 
     @ConfigProperty(name = "docdrop.commands.tar.location", defaultValue = "/usr/bin/tar")
@@ -74,11 +74,15 @@ public class Configuration {
     public String githubForkCssUrl;
 
     public Path getArtifactsDirectory() {
-        return Path.of(artifactStorageRoot).resolve("artifacts");
+        return getStorageRoot().resolve("artifacts");
     }
 
     public Path getIngestDirectory() {
-        return Path.of(artifactStorageRoot).resolve("ingest");
+        return getStorageRoot().resolve("ingest");
+    }
+    
+    public Path getStorageRoot() {
+        return Path.of(artifactStorageRoot);
     }
     
     public String getUploadUrl() {
@@ -94,14 +98,24 @@ public class Configuration {
     }
     
     public String getCssBootstrapDistUrl() {
+        if (bootstrapCssUrl.toLowerCase().startsWith("http")) {
+            return bootstrapCssUrl;
+        }
         return hostUrl+bootstrapCssUrl;
     }
     
     public String getCssDocdropUrl() {
+        if (docdropCssUrl.toLowerCase().startsWith("http")) {
+            return docdropCssUrl;
+        }
         return hostUrl+docdropCssUrl;
     }
-
-
-    public Platform platform = Platform.get();
+    
+    public String getForkRibbonUrl() {
+        if (githubForkCssUrl.toLowerCase().startsWith("http")) {
+            return githubForkCssUrl;
+        }
+        return hostUrl+githubForkCssUrl;
+    }
 
 }
