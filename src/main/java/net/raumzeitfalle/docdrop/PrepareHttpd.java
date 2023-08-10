@@ -1,6 +1,26 @@
+/*-
+ * #%L
+ * docdrop
+ * %%
+ * Copyright (C) 2023 Oliver Loeffler, Raumzeitfalle.net
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
 package net.raumzeitfalle.docdrop;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -14,7 +34,6 @@ public class PrepareHttpd {
 		String serverUrl = getServerUrl();
 		String docdropPort = getServerPort();
 		String conf = """
-				
 				ProxyPass /upload DOCDROP_HOSTURL:DOCDROP_PORT/upload
                 ProxyPassReverse /upload DOCDROP_HOSTURL:DOCDROP_PORT/upload
 
@@ -29,15 +48,26 @@ public class PrepareHttpd {
 
 				""";
 		
-		String configured = conf.replace("DOCDROP_HOSTURL", serverUrl)
-				                .replace("DOCDROP_PORT", docdropPort);
-		
-		Path optionalConf = Path.of("/etc/httpd/conf/extra/docdrop.conf");
+		Path httpdConf = Path.of("/etc/httpd/conf/httpd.conf");
+		String config = readHttpdConf(httpdConf);
+		String proxy = conf.replace("DOCDROP_HOSTURL", serverUrl)
+				           .replace("DOCDROP_PORT", docdropPort);
+
+		config = config+System.lineSeparator()+proxy;
 		try {
-			Files.writeString(optionalConf, configured, StandardOpenOption.CREATE);
-			LOG.log(Level.SEVERE, "Httpd configuration written to: {0}", optionalConf);
+			Files.writeString(httpdConf, config, StandardOpenOption.CREATE);
+			LOG.log(Level.SEVERE, "Httpd configuration written to: {0}", httpdConf);
 		} catch (IOException e) {
-			LOG.log(Level.SEVERE, "Failed to write httpd configuration in: %s".formatted(optionalConf),e);
+			LOG.log(Level.SEVERE, "Failed to write httpd configuration in: %s".formatted(httpdConf),e);
+		}
+	}
+
+	private static String readHttpdConf(Path httpdConf) {
+		try {
+			return Files.readString(httpdConf);
+		} catch (IOException e) {
+			LOG.log(Level.SEVERE, "Failed to read httpd configuration in: %s".formatted(httpdConf),e);
+			throw new UncheckedIOException(e);
 		}
 	}
 

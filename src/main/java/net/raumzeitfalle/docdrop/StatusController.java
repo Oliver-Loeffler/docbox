@@ -64,7 +64,8 @@ public class StatusController {
     public TemplateInstance get() {
         int jobs = artifactsQueue.getReceivedArtifacts().size();
         int index = artifactsQueue.getArtifacts2Index().size();
-        int ingestedFiles = configuration.getIngestDirectory().toFile().list().length;
+        String[] fileNames = configuration.getIngestDirectory().toFile().list();
+        int ingestedFiles = fileNames != null ? fileNames.length : 0;
         return template.instance()
                        .data("config", configuration)
                        .data("jobs", jobs)
