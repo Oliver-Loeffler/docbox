@@ -2,9 +2,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jboss.logmanager.Level;
 
 public class PrepareHttpd {
 	private static final Logger LOG = Logger.getLogger(PrepareHttpd.class.getName());
@@ -30,7 +30,7 @@ public class PrepareHttpd {
 		String configured = conf.replace("DOCDROP_HOSTURL", serverUrl)
 				                .replace("DOCDROP_PORT", docdropPort);
 		
-		Path optionalConf = Path.of("/etc/httpd/conf/extra/docdrop.conf");
+		Path optionalConf = Path.of("/etc/httpd/conf.d/docdrop.conf");
 		try {
 			Files.writeString(optionalConf, configured, StandardOpenOption.CREATE);
 			LOG.log(Level.SEVERE, "Httpd configuration written to: {0}", optionalConf);

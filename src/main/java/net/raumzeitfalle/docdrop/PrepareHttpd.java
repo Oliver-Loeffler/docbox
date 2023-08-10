@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jboss.logmanager.Level;
 
 public class PrepareHttpd {
 	private static final Logger LOG = Logger.getLogger(PrepareHttpd.class.getName());
