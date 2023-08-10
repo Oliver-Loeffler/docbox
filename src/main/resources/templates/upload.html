@@ -77,7 +77,7 @@
             <h2>cURL example:</h2>
             <p>There is an endpoint available where one upload a set of files via POST request.</p>
             <kbd>
-                curl -v -F group="net.opensource" -F artifact="library" -F version="v1.0.2" -F file=@"c:\mylibrary-javadoc.jar" http://localhost:8080/upload
+                curl -v -F group="net.opensource" -F artifact="library" -F version="v1.0.2" -F file=@"c:\mylibrary-javadoc.jar" {config.getUploadEndpointUrl()}
             </kbd>
         </div>
     </main>

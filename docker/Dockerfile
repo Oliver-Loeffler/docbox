@@ -30,6 +30,7 @@ CMD ["sh", "./entrypoint.sh"]
 EXPOSE 80
 EXPOSE 8080
 
+VOLUME /var/www/html/ingest/
 VOLUME /var/www/html/artifacts/
 VOLUME /var/www/html/dist/
 VOLUME /var/log/

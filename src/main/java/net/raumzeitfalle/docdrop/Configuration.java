@@ -33,6 +33,9 @@ public class Configuration {
     
     @ConfigProperty(name = "docdrop.views.upload.url", defaultValue = "/upload.html")
     public String uploadUrl;
+    
+    @ConfigProperty(name = "docdrop.endpoints.upload.url", defaultValue = "/upload")
+    public String uploadEndpoint;
 
     @ConfigProperty(name = "docdrop.views.status.url", defaultValue = "/status.html")
     public String statusUrl;
@@ -116,6 +119,13 @@ public class Configuration {
             return githubForkCssUrl;
         }
         return hostUrl+githubForkCssUrl;
+    }
+    
+    public String getUploadEndpointUrl() {
+        if (uploadEndpoint.toLowerCase().startsWith("http")) {
+            return uploadEndpoint;
+        }
+        return hostUrl+uploadEndpoint;
     }
 
 }

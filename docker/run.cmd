@@ -1,1 +1,1 @@
-docker run -it --name apache -p 80:80 -p 8080:8080 -v C:\Github\docdrop:/src/docdrop/ -v C:\Github\docdrop_files:/var/www/html/ -d net/raumzeitfalle/docdrop:0.3
+docker run -it --name apache -p 80:80 -p 8080:8080 -d net/raumzeitfalle/docdrop:0.3
