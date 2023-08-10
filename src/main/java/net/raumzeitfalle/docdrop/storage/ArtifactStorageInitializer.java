@@ -24,6 +24,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import io.quarkus.qute.Template;
 import io.quarkus.runtime.Startup;
@@ -38,6 +40,8 @@ import net.raumzeitfalle.docdrop.Configuration;
  */
 public class ArtifactStorageInitializer {
 
+    private final Logger LOG = Logger.getLogger(getClass().getName());
+    
     @Inject
     Configuration configuration;
     
@@ -52,6 +56,7 @@ public class ArtifactStorageInitializer {
     public void createDataRootIndexFile() throws IOException {
         String uploadUrl = configuration.getUploadUrl();
         Path fileName = configuration.getStorageRoot().resolve("index.html");
+        LOG.log(Level.INFO, "Writing repository index: {0}", fileName.toAbsolutePath());
         String html = rootIndex.instance().data("forwardurl", uploadUrl).render();
         Files.write(fileName, html.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE);
     }
