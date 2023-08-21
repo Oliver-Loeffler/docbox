@@ -76,7 +76,7 @@ docker run -it --name docdrop -p 8080:80 -e APACHE_HTTPD_PORT="8080" -e DOCDROP_
 
 It is now also possible to expose the collected artifacts and the logfiles. The following example applies to Windows:
 
-```
+```shell
 docker run -it ^
 --name docdrop ^
 -p 8080:80 ^
@@ -86,7 +86,22 @@ docker run -it ^
 -v C:\Temp\docdrop\ingest:/var/www/html/ingest/ ^
 -v C:\Temp\docdrop\logs:/var/log/docdrop/ ^
 -v C:\Temp\docdrop\logs_httpd:/var/log/httpd/ ^
--d net/raumzeitfalle/docdrop:0.3
+-d raumzeitfalle/docdrop:0.3
+```
+
+For Linux it would look like:
+
+```shell
+docker run -it \
+--name docdrop \
+-p 8080:80 \
+-e APACHE_HTTPD_PORT="8080" \
+-e DOCDROP_HOSTURL=http://localhost \
+-v C:\Temp\docdrop\artifacts:/var/www/html/artifacts/ \
+-v C:\Temp\docdrop\ingest:/var/www/html/ingest/ \
+-v C:\Temp\docdrop\logs:/var/log/docdrop/ \
+-v C:\Temp\docdrop\logs_httpd:/var/log/httpd/ \
+-d raumzeitfalle/docdrop:0.3
 ```
 
 
