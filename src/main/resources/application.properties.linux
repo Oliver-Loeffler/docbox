@@ -12,6 +12,7 @@ quarkus.log.file.rotation.max-backup-index=10
 quarkus.http.limits.max-form-attribute-size=100M
 quarkus.http.limits.max-body-size=2048000K
 quarkus.http.host=0.0.0.0
+apache.httpd.port=${APACHE_HTTPD_PORT:80}
 
 docdrop.host.url=${DOCDROP_HOSTURL:http://localhost}
 docdrop.repository.name=DocDrop

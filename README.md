@@ -63,14 +63,32 @@ Starting the Web App:
 There is now a first Docker image available. 
 
 ```shell
-docker pull raumzeitfalle/docdrop:0.1
-docker run -it --name docdrop -p 80:80 -p 8080:8080 -d raumzeitfalle/docdrop:0.2
+docker pull raumzeitfalle/docdrop:0.3
+docker run -it --name docdrop -p 80:80  -d raumzeitfalle/docdrop:0.3
 ```
 
-When operated on a different port than 8080 for Quarkus or 80 for httpd, a configuration change is needed.
-The Quarkus configuration can be changed in the developers GUI `http://localhost:8080/q/dev-ui/configuration-form-editor` (replace port 8080 accordingly).
-There the settings `docdrop.views.upload.url` and `docdrop.views.status.url` require an update as well.
-As the index files are just basic static files, those need to be updated as well. This can be achieved on the `http://localhost:8080/status.html` page. All index levels can be updated there automatically. Depending on the amount of artifacts stored, this may take a while. The changes will not be effective immediately but eventually the will be.
+In some cases, when port 80 is already occupied, one can configure the underlying HTTPD to use another port. Also Quarkus must be aware of the new port:
+
+```shell
+docker pull raumzeitfalle/docdrop:0.3
+docker run -it --name docdrop -p 8080:80 -e APACHE_HTTPD_PORT="8080" -e DOCDROP_HOSTURL="http://myhostname" -d docdropdev:0.4
+```
+
+It is now also possible to expose the collected artifacts and the logfiles. The following example applies to Windows:
+
+```
+docker run -it ^
+--name docdrop ^
+-p 8080:80 ^
+-e APACHE_HTTPD_PORT="8080" ^
+-e DOCDROP_HOSTURL=http://localhost ^
+-v C:\Temp\docdrop\artifacts:/var/www/html/artifacts/ ^
+-v C:\Temp\docdrop\ingest:/var/www/html/ingest/ ^
+-v C:\Temp\docdrop\logs:/var/log/docdrop/ ^
+-v C:\Temp\docdrop\logs_httpd:/var/log/httpd/ ^
+-d net/raumzeitfalle/docdrop:0.3
+```
+
 
 ## Screenshots
 
@@ -102,7 +120,7 @@ As the index files are just basic static files, those need to be updated as well
 ### Video
 
 Conveniently host Docdrop as a container and publish your own documentation artifacts either via HTML form or via POST request using cURL. Supports `.zip`, `.tar`, `.tar.gz` and `-javadoc.jar`.
-Boundary condition: the artifacts shoul have an `index.html` in their root otherwise the httpd would not know what to show. The case that all relevant contents is archived in one sub directory is handled by creating a meta tag based forward whe detected.
+Boundary condition: the artifacts shoul have an `index.html` in their root otherwise the httpd would not know what to show. The case that all relevant contents is archived in one sub directory is handled by creating a meta tag based forward when detected.
 
 ```shell
 curl -v -F group="net.opensource" \

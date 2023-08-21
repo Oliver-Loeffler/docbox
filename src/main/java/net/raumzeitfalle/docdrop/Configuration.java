@@ -75,6 +75,9 @@ public class Configuration {
     
     @ConfigProperty(name = "docdrop.css.forkmegit.url", defaultValue = "https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css")
     public String githubForkCssUrl;
+    
+    @ConfigProperty(name = "apache.httpd.port")
+    public int apacheHttpdPort;
 
     public Path getArtifactsDirectory() {
         return getStorageRoot().resolve("artifacts");
@@ -89,20 +92,32 @@ public class Configuration {
     }
     
     public String getUploadUrl() {
+        if (apacheHttpdPort != 80) {
+        	return hostUrl+":"+apacheHttpdPort+uploadUrl;	
+        }
         return hostUrl+uploadUrl;
     }
     
     public String getStatusUrl() {
-        return hostUrl+statusUrl;
+        if (apacheHttpdPort != 80) {
+        	return hostUrl+":"+apacheHttpdPort+statusUrl;	
+        }
+    	return hostUrl+statusUrl;
     }
 
     public String getArtifactsIndexUrl() {
+        if (apacheHttpdPort != 80) {
+        	return hostUrl+":"+apacheHttpdPort+artifactsIndexUrl;	
+        }
         return hostUrl+artifactsIndexUrl;
     }
     
     public String getCssBootstrapDistUrl() {
         if (bootstrapCssUrl.toLowerCase().startsWith("http")) {
             return bootstrapCssUrl;
+        }
+        if (apacheHttpdPort != 80) {
+        	return hostUrl+":"+apacheHttpdPort+bootstrapCssUrl;	
         }
         return hostUrl+bootstrapCssUrl;
     }
@@ -111,6 +126,9 @@ public class Configuration {
         if (docdropCssUrl.toLowerCase().startsWith("http")) {
             return docdropCssUrl;
         }
+        if (apacheHttpdPort != 80) {
+        	return hostUrl+":"+apacheHttpdPort+docdropCssUrl;	
+        }
         return hostUrl+docdropCssUrl;
     }
     
@@ -118,12 +136,18 @@ public class Configuration {
         if (githubForkCssUrl.toLowerCase().startsWith("http")) {
             return githubForkCssUrl;
         }
+        if (apacheHttpdPort != 80) {
+        	return hostUrl+":"+apacheHttpdPort+githubForkCssUrl;	
+        }
         return hostUrl+githubForkCssUrl;
     }
     
     public String getUploadEndpointUrl() {
         if (uploadEndpoint.toLowerCase().startsWith("http")) {
             return uploadEndpoint;
+        }
+        if (apacheHttpdPort != 80) {
+        	return hostUrl+":"+apacheHttpdPort+uploadEndpoint;	
         }
         return hostUrl+uploadEndpoint;
     }
