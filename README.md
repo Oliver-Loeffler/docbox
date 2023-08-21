@@ -71,7 +71,7 @@ In some cases, when port 80 is already occupied, one can configure the underlyin
 
 ```shell
 docker pull raumzeitfalle/docdrop:0.3
-docker run -it --name docdrop -p 8080:80 -e APACHE_HTTPD_PORT="8080" -e DOCDROP_HOSTURL="http://myhostname" -d docdropdev:0.4
+docker run -it --name docdrop -p 8080:80 -e APACHE_HTTPD_PORT="8080" -e DOCDROP_HOSTURL="http://myhostname" -d raumzeitfalle/docdrop:0.3
 ```
 
 It is now also possible to expose the collected artifacts and the logfiles. The following example applies to Windows:
