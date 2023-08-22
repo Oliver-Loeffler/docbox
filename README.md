@@ -64,6 +64,7 @@ Following options exist:
 ## Running DocDrop
 
 **_Prerequisite_**:
+
 * Apache httpd must be running and serving contents of `docbox.artifact.storage.location`
 
 The Docker image usually takes care of this. When running the application without Docker there must be another program running to serve the static files. All received documentation packages are expected to consist of static pages (may be with some statically served JavaScript included, but not more). 
@@ -78,15 +79,16 @@ Starting the Web App:
 There is now a first Docker image available. The Dev UI is not available from Docker served contents. 
 
 ```shell
-docker pull raumzeitfalle/docbox:0.4
-docker run -it --name docbox -p 80:80  -d raumzeitfalle/docbox:0.4
+docker pull raumzeitfalle/docbox:0.5
+docker run -it --name docbox -p 80:80  -d raumzeitfalle/docbox:0.5
 ```
 
 In some cases, when port 80 is already occupied, one can configure the underlying HTTPD to use another port. Also Quarkus must be aware of the new port:
 
 ```shell
-docker pull raumzeitfalle/docbox:0.4
-docker run -it --name docbox -p 8080:80 -e APACHE_HTTPD_PORT="8080" -e DOCBOX_HOSTURL="http://myhostname" -d raumzeitfalle/docbox:0.4
+<<<<<<< HEAD
+docker pull raumzeitfalle/docbox:0.5
+docker run -it --name docbox -p 8080:80 -e APACHE_HTTPD_PORT="8080" -e DOCBOX_HOSTURL="http://myhostname" -d raumzeitfalle/docbox:0.5
 ```
 
 It is now also possible to expose the collected artifacts and the logfiles. The following example applies to Windows:
@@ -102,7 +104,7 @@ docker run -it ^
 -v C:\Temp\docbox\ingest:/var/www/html/ingest/ ^
 -v C:\Temp\docbox\logs:/var/log/docbox/ ^
 -v C:\Temp\docbox\logs_httpd:/var/log/httpd/ ^
--d raumzeitfalle/docbox:0.3
+-d raumzeitfalle/docbox:0.5
 ```
 
 For Linux it would look like:
@@ -118,7 +120,7 @@ docker run -it \
 -v C:\Temp\docbox\ingest:/var/www/html/ingest/ \
 -v C:\Temp\docbox\logs:/var/log/docbox/ \
 -v C:\Temp\docbox\logs_httpd:/var/log/httpd/ \
--d raumzeitfalle/docbox:0.3
+-d raumzeitfalle/docbox:0.5
 ```
 
 ## Screenshots
