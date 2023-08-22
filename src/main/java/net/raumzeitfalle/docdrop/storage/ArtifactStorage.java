@@ -148,13 +148,18 @@ public class ArtifactStorage {
     }
 
     public void dropArtifacts() {
-        Path artifactsRoot = configuration.getArtifactsDirectory();
-        try (Stream<java.nio.file.Path> items = Files.list(artifactsRoot)) {
-            items.forEach(this::delete);
-            LOG.log(Level.INFO, "Dropped repository contents.");
-        } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Deletion of repository item failed.", e);
-        }
+    	if (configuration.allowRepositoryDrop()) {
+    		Path artifactsRoot = configuration.getArtifactsDirectory();
+    		try (Stream<java.nio.file.Path> items = Files.list(artifactsRoot)) {
+    			items.forEach(this::delete);
+    			LOG.log(Level.INFO, "Dropped repository contents.");
+    		} catch (Exception e) {
+    			LOG.log(Level.SEVERE, "Deletion of repository item failed.", e);
+    		}    		
+    	} else {
+    		LOG.log(Level.INFO, "Dropping the repository contents is not permitted. Skipping operation.");
+    	}
+    	
     }
 
     public void dropIngestedArtifacts() {

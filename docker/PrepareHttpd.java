@@ -33,22 +33,23 @@ public class PrepareHttpd {
 		String serverUrl = getServerUrl();
 		String docdropPort = getServerPort();
 		String conf = """
-				ProxyPass /upload DOCDROP_HOSTURL:DOCDROP_PORT/upload
-                ProxyPassReverse /upload DOCDROP_HOSTURL:DOCDROP_PORT/upload
+		ProxyPass /upload DOCDROP_HOSTURL:DOCDROP_PORT/upload
+        ProxyPassReverse /upload DOCDROP_HOSTURL:DOCDROP_PORT/upload
 
-                ProxyPass /upload.html DOCDROP_HOSTURL:DOCDROP_PORT/upload.html
-                ProxyPassReverse /upload.html http://localhost:DOCDROP_PORT/upload.html
+        ProxyPass /upload.html DOCDROP_HOSTURL:DOCDROP_PORT/upload.html
+        ProxyPassReverse /upload.html http://localhost:DOCDROP_PORT/upload.html
 
-                ProxyPass /status DOCDROP_HOSTURL:DOCDROP_PORT/status.html
-                ProxyPassReverse /status DOCDROP_HOSTURL:DOCDROP_PORT/status.html
+        ProxyPass /status DOCDROP_HOSTURL:DOCDROP_PORT/status.html
+        ProxyPassReverse /status DOCDROP_HOSTURL:DOCDROP_PORT/status.html
 
-                ProxyPass /status.html DOCDROP_HOSTURL:DOCDROP_PORT/status.html
-                ProxyPassReverse /status.html DOCDROP_HOSTURL:DOCDROP_PORT/status.html
-
-				""";
+        ProxyPass /status.html DOCDROP_HOSTURL:DOCDROP_PORT/status.html
+        ProxyPassReverse /status.html DOCDROP_HOSTURL:DOCDROP_PORT/status.html
+		""";
 		
 		Path httpdConf = Path.of("/etc/httpd/conf/httpd.conf");
-		String config = readHttpdConf(httpdConf);
+		Path backupedHttpdConf = createBackup(httpdConf);
+				
+		String config = readHttpdConf(backupedHttpdConf);
 		String proxy = conf.replace("DOCDROP_HOSTURL", serverUrl)
 				           .replace("DOCDROP_PORT", docdropPort);
 
@@ -59,6 +60,21 @@ public class PrepareHttpd {
 		} catch (IOException e) {
 			LOG.log(Level.SEVERE, "Failed to write httpd configuration in: %s".formatted(httpdConf),e);
 		}
+	}
+
+	private static Path createBackup(Path httpdConf) {
+		Path backupFile = httpdConf.getParent().resolve(httpdConf.getFileName().toString()+"_backup");
+		if (Files.exists(backupFile)) {
+			return backupFile;
+		}
+		try {
+			LOG.log(Level.INFO, "Creating backup of %s to %s".formatted(httpdConf, backupFile));
+			Files.copy(httpdConf, backupFile);
+		} catch (IOException e) {
+			LOG.log(Level.SEVERE, "Failed to create backup of %s into %s".formatted(httpdConf, backupFile),e);
+			throw new UncheckedIOException(e);
+		}
+		return backupFile;
 	}
 
 	private static String readHttpdConf(Path httpdConf) {
