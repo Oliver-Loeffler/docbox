@@ -34,11 +34,11 @@ RUN mkdir install && \
 RUN rm -rf /etc/localtime && \
     ln -s /usr/share/zoneinfo/Europe/Berlin /etc/localtime
 
-RUN mkdir -p /docdrop && \
+RUN mkdir -p /docbox && \
     mkdir -p /var/www/html/dist/ && \
     mkdir -p /var/www/html/ingest && \
     mkdir -p /var/www/html/artifacts && \
-    mkdir -p /var/log/docdrop
+    mkdir -p /var/log/docbox
 
 RUN cd install && \
     wget "https://github.com/twbs/bootstrap/releases/download/v5.3.1/bootstrap-5.3.1-dist.zip" && \
@@ -49,18 +49,15 @@ RUN cd install && \
 ENV TZ=Europe/Berlin
 ENV JAVA_HOME="/usr/lib/jvm/jdk-17.0.8+7"
 
-# RUN  git clone https://github.com/Oliver-Loeffler/docdrop.git && \
-#      rm -rf /docdrop/src/main/resources/application.properties
-
-COPY ./docker/css/docdrop.css /var/www/html/dist/docdrop.css
+COPY ./docker/css/application.css /var/www/html/dist/application.css
 COPY ./docker/js/darkmode.js /var/www/html/dist/darkmode.js
-COPY ./docker/application.properties /docdrop/application.properties
+COPY ./docker/application.properties /docbox/application.properties
 COPY ./docker/httpd.conf /etc/httpd/conf/httpd.conf
-COPY ./target/quarkus-app /docdrop
-COPY ./docker/PrepareHttpd.java /docdrop 
+COPY ./target/quarkus-app /docbox
+COPY ./docker/PrepareHttpd.java /docbox 
 
-ENV DOCDROP_HOSTURL=http://localhost
-ENV TEMP=/var/log/docdrop
+ENV DOCBOX_HOSTURL=http://localhost
+ENV TEMP=/var/log/docbox
 
 ADD ./docker/entrypoint.sh /entrypoint.sh
 
@@ -72,6 +69,6 @@ VOLUME /var/www/html/ingest/
 VOLUME /var/www/html/artifacts/
 VOLUME /var/www/html/dist/
 VOLUME /var/log/httpd/
-VOLUME /var/log/docdrop/
-VOLUME /docdrop/
+VOLUME /var/log/docbox/
+VOLUME /docbox/
 

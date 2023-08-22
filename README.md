@@ -1,4 +1,4 @@
-# docdrop
+# docbox
 
 ## Sharing documentation artifacts from CI/CD
 
@@ -36,35 +36,35 @@ Following environment variables are available:
 
 | Env Variable Name                 | Values                                    | Description |
 |-----------------------------------|-------------------------------------------|-------------|
-| `DOCDROP_REPOSITORY_ACTIONS_DROP` | `YES`,`NO`                                | When configured with `YES`, the status page will allow repository deletion. |
-| `DOCDROP_HOSTURL`                 | `http://localhost`, `http://yourhostname` | There must be no port number. Just have the protocol and your hostname there. The value is used to create the URLs in the static index pages. |
+| `DOCBOX_REPOSITORY_ACTIONS_DROP` | `YES`,`NO`                                | When configured with `YES`, the status page will allow repository deletion. |
+| `DOCBOX_HOSTURL`                 | `http://localhost`, `http://yourhostname` | There must be no port number. Just have the protocol and your hostname there. The value is used to create the URLs in the static index pages. |
 | `APACHE_HTTPD_PORT`               | `80`, `8080`, any port you assign         | Inside Docker container the Apache HTTPD always runs on port 80. Outside the Docker container it might be another port. Configure this specific port here. The value is used to create the URLs in the static index pages. |
-| `TEMP`                            | `/var/log`                                | The application logfiles will be placed into `${TEMP}/docdrop/docdrop.log`. Change this variable to place the application logs at a different location. |
+| `TEMP`                            | `/var/log`                                | The application logfiles will be placed into `${TEMP}/docbox/docbox.log`. Change this variable to place the application logs at a different location. |
 
 Following options exist:
 
 | Configuration key                   | Description                                     | Example     |
 |-------------------------------------|-------------------------------------------------|-------------|
 | `apache.httpd.port`                 | See env. var: `APACHE_HTTPD_PORT`               |             |
-| `docdrop.host.url`                  | See env. var: `DOCDROP_HOSTURL`                 |             |
-| `docdrop.application.name`          | Application name in all generated html files.   | DocDrop     |
-| `docdrop.repository.name`           | Name of the repositor.                          | DocDrop     |
-| `docdrop.repository.index.file`     | Name of directory index files.                  | index.html  |
-| `docdrop.repository.actions.drop`   | See env. var: `DOCDROP_REPOSITORY_ACTIONS_DROP` |             | 
-| `docdrop.css.bootstrap.dist.url`    | full URL of `bootstrap.css`                     |             |
-| `docdrop.css.url`                   | DocDrop custom CSS: `docdrop.css`               |             |
-| `docdrop.views.artifacts.index.url` | Artifact index root URL                         | http://localhost/artifacts        |
-| `docdrop.views.upload.url`          | Location of upload.html                         | http://localhost:8080/upload.html |
-| `docdrop.views.status.url`          | Location of status.html                         | http://localhost:8080/status.html |
-| `docdrop.artifact.storage.location` | Volume for artifact storage                     | `C:\Temp`         |
-| `docdrop.commands.7z.location`      | 7za Executable                                  | `C:\Test\7za.exe` |
-| `docdrop.commands.tar.location`     | TAR Executable                                  | `/usr/bin/tar`    |
-| `docdrop.commands.unzip.location`   | UNZIP Executable                                | `/usr/bin/unzip`  |
+| `docbox.host.url`                  | See env. var: `DOCBOX_HOSTURL`                 |             |
+| `docbox.application.name`          | Application name in all generated html files.   | DocDrop     |
+| `docbox.repository.name`           | Name of the repositor.                          | DocDrop     |
+| `docbox.repository.index.file`     | Name of directory index files.                  | index.html  |
+| `docbox.repository.actions.drop`   | See env. var: `DOCBOX_REPOSITORY_ACTIONS_DROP` |             | 
+| `docbox.css.bootstrap.dist.url`    | full URL of `bootstrap.css`                     |             |
+| `docbox.css.url`                   | DocDrop custom CSS: `docbox.css`               |             |
+| `docbox.views.artifacts.index.url` | Artifact index root URL                         | http://localhost/artifacts        |
+| `docbox.views.upload.url`          | Location of upload.html                         | http://localhost:8080/upload.html |
+| `docbox.views.status.url`          | Location of status.html                         | http://localhost:8080/status.html |
+| `docbox.artifact.storage.location` | Volume for artifact storage                     | `C:\Temp`         |
+| `docbox.commands.7z.location`      | 7za Executable                                  | `C:\Test\7za.exe` |
+| `docbox.commands.tar.location`     | TAR Executable                                  | `/usr/bin/tar`    |
+| `docbox.commands.unzip.location`   | UNZIP Executable                                | `/usr/bin/unzip`  |
 
 ## Running DocDrop
 
 **_Prerequisite_**:
-* Apache httpd must be running and serving contents of `docdrop.artifact.storage.location`
+* Apache httpd must be running and serving contents of `docbox.artifact.storage.location`
 
 The Docker image usually takes care of this. When running the application without Docker there must be another program running to serve the static files. All received documentation packages are expected to consist of static pages (may be with some statically served JavaScript included, but not more). 
 
@@ -78,47 +78,47 @@ Starting the Web App:
 There is now a first Docker image available. The Dev UI is not available from Docker served contents. 
 
 ```shell
-docker pull raumzeitfalle/docdrop:0.4
-docker run -it --name docdrop -p 80:80  -d raumzeitfalle/docdrop:0.4
+docker pull raumzeitfalle/docbox:0.4
+docker run -it --name docbox -p 80:80  -d raumzeitfalle/docbox:0.4
 ```
 
 In some cases, when port 80 is already occupied, one can configure the underlying HTTPD to use another port. Also Quarkus must be aware of the new port:
 
 ```shell
-docker pull raumzeitfalle/docdrop:0.4
-docker run -it --name docdrop -p 8080:80 -e APACHE_HTTPD_PORT="8080" -e DOCDROP_HOSTURL="http://myhostname" -d raumzeitfalle/docdrop:0.4
+docker pull raumzeitfalle/docbox:0.4
+docker run -it --name docbox -p 8080:80 -e APACHE_HTTPD_PORT="8080" -e DOCBOX_HOSTURL="http://myhostname" -d raumzeitfalle/docbox:0.4
 ```
 
 It is now also possible to expose the collected artifacts and the logfiles. The following example applies to Windows:
 
 ```shell
 docker run -it ^
---name docdrop ^
+--name docbox ^
 -p 8080:80 ^
 -e APACHE_HTTPD_PORT="8080" ^
--e DOCDROP_HOSTURL=http://localhost ^
--e DOCDROP_REPOSITORY_ACTIONS_DROP="YES" ^
--v C:\Temp\docdrop\artifacts:/var/www/html/artifacts/ ^
--v C:\Temp\docdrop\ingest:/var/www/html/ingest/ ^
--v C:\Temp\docdrop\logs:/var/log/docdrop/ ^
--v C:\Temp\docdrop\logs_httpd:/var/log/httpd/ ^
--d raumzeitfalle/docdrop:0.3
+-e DOCBOX_HOSTURL=http://localhost ^
+-e DOCBOX_REPOSITORY_ACTIONS_DROP="YES" ^
+-v C:\Temp\docbox\artifacts:/var/www/html/artifacts/ ^
+-v C:\Temp\docbox\ingest:/var/www/html/ingest/ ^
+-v C:\Temp\docbox\logs:/var/log/docbox/ ^
+-v C:\Temp\docbox\logs_httpd:/var/log/httpd/ ^
+-d raumzeitfalle/docbox:0.3
 ```
 
 For Linux it would look like:
 
 ```shell
 docker run -it \
---name docdrop \
+--name docbox \
 -p 8080:80 \
 -e APACHE_HTTPD_PORT="8080" \
--e DOCDROP_HOSTURL=http://localhost \
--e DOCDROP_REPOSITORY_ACTIONS_DROP="YES" \
--v C:\Temp\docdrop\artifacts:/var/www/html/artifacts/ \
--v C:\Temp\docdrop\ingest:/var/www/html/ingest/ \
--v C:\Temp\docdrop\logs:/var/log/docdrop/ \
--v C:\Temp\docdrop\logs_httpd:/var/log/httpd/ \
--d raumzeitfalle/docdrop:0.3
+-e DOCBOX_HOSTURL=http://localhost \
+-e DOCBOX_REPOSITORY_ACTIONS_DROP="YES" \
+-v C:\Temp\docbox\artifacts:/var/www/html/artifacts/ \
+-v C:\Temp\docbox\ingest:/var/www/html/ingest/ \
+-v C:\Temp\docbox\logs:/var/log/docbox/ \
+-v C:\Temp\docbox\logs_httpd:/var/log/httpd/ \
+-d raumzeitfalle/docbox:0.3
 ```
 
 ## Screenshots
@@ -161,7 +161,7 @@ curl -v -F group="net.opensource" \
         http://localhost:8080/upload
 ```
 
-https://github.com/Oliver-Loeffler/docdrop/assets/22102800/1e221ef2-dc91-4c2b-a7b7-f1bea0108cc7
+https://github.com/Oliver-Loeffler/docbox/assets/22102800/1e221ef2-dc91-4c2b-a7b7-f1bea0108cc7
 
 ## Packaging the application
 
@@ -193,7 +193,7 @@ Or, if you don't have GraalVM installed, you can run the native executable build
 ./mvnw package -Pnative -Dquarkus.native.container-build=true
 ```
 
-You can then execute your native executable with: `./target/docdrop-1.0.0-SNAPSHOT-runner`
+You can then execute your native executable with: `./target/docbox-1.0.0-SNAPSHOT-runner`
 
 If you want to learn more about building native executables, please consult https://quarkus.io/guides/maven-tooling.
 

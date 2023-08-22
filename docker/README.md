@@ -13,9 +13,9 @@
 * Artifacts: `/var/www/html/artifacts`
 * CSS/JS files: `/var/www/html/dist/`
 * Logfiles: 
-    * Docdrop / Quarkus: `/var/log/docdrop.log` (rotating file handler, 10x 10 MiB)
+    * Docdrop / Quarkus: `/var/log/docbox.log` (rotating file handler, 10x 10 MiB)
     * Httpd: `/var/log/httpd/` (various logs)
-* Application directory: `/docdrop`
+* Application directory: `/docbox`
 
 ## Mode of operation
 

@@ -33,25 +33,25 @@ public class PrepareHttpd {
 		String serverUrl = getServerUrl();
 		String docdropPort = getServerPort();
 		String conf = """
-		ProxyPass /upload DOCDROP_HOSTURL:DOCDROP_PORT/upload
-        ProxyPassReverse /upload DOCDROP_HOSTURL:DOCDROP_PORT/upload
+		ProxyPass /upload DOCBOX_HOSTURL:DOCBOX_PORT/upload
+        ProxyPassReverse /upload DOCBOX_HOSTURL:DOCBOX_PORT/upload
 
-        ProxyPass /upload.html DOCDROP_HOSTURL:DOCDROP_PORT/upload.html
-        ProxyPassReverse /upload.html http://localhost:DOCDROP_PORT/upload.html
+        ProxyPass /upload.html DOCBOX_HOSTURL:DOCBOX_PORT/upload.html
+        ProxyPassReverse /upload.html http://localhost:DOCBOX_PORT/upload.html
 
-        ProxyPass /status DOCDROP_HOSTURL:DOCDROP_PORT/status.html
-        ProxyPassReverse /status DOCDROP_HOSTURL:DOCDROP_PORT/status.html
+        ProxyPass /status DOCBOX_HOSTURL:DOCBOX_PORT/status.html
+        ProxyPassReverse /status DOCBOX_HOSTURL:DOCBOX_PORT/status.html
 
-        ProxyPass /status.html DOCDROP_HOSTURL:DOCDROP_PORT/status.html
-        ProxyPassReverse /status.html DOCDROP_HOSTURL:DOCDROP_PORT/status.html
+        ProxyPass /status.html DOCBOX_HOSTURL:DOCBOX_PORT/status.html
+        ProxyPassReverse /status.html DOCBOX_HOSTURL:DOCBOX_PORT/status.html
 		""";
 		
 		Path httpdConf = Path.of("/etc/httpd/conf/httpd.conf");
 		Path backupedHttpdConf = createBackup(httpdConf);
 				
 		String config = readHttpdConf(backupedHttpdConf);
-		String proxy = conf.replace("DOCDROP_HOSTURL", serverUrl)
-				           .replace("DOCDROP_PORT", docdropPort);
+		String proxy = conf.replace("DOCBOX_HOSTURL", serverUrl)
+				           .replace("DOCBOX_PORT", docdropPort);
 
 		config = config+System.lineSeparator()+proxy;
 		try {
@@ -91,12 +91,12 @@ public class PrepareHttpd {
 	}
 
 	private static String getServerUrl() {
-		String serverUrl = System.getenv("DOCDROP_HOSTURL");
+		String serverUrl = System.getenv("DOCBOX_HOSTURL");
 		if (null == serverUrl) {
-			LOG.log(Level.INFO, "Failed to read environment variable DOCDROP_HOSTURL.");
+			LOG.log(Level.INFO, "Failed to read environment variable DOCBOX_HOSTURL.");
 			serverUrl = "http://localhost";
 		} else {
-			LOG.log(Level.INFO, "Detected environment variable DOCDROP_HOSTURL={0}", serverUrl);
+			LOG.log(Level.INFO, "Detected environment variable DOCBOX_HOSTURL={0}", serverUrl);
 		}
 		if (serverUrl.endsWith("/")) {
 			serverUrl = serverUrl.substring(0, serverUrl.length()-2);

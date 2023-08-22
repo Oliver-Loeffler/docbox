@@ -23,24 +23,24 @@ quarkus.http.host=0.0.0.0
 
 quarkus.log.file.enable=true
 quarkus.log.file.level=ALL
-quarkus.log.file.path=docdrop.log
+quarkus.log.file.path=docbox.log
 quarkus.log.file.format=%d{yyyy-MM-dd HH:mm:ss} %-5p [%c] (%t) %s%e%n
 quarkus.log.file.rotation.max-file-size=10M
 quarkus.log.file.rotation.max-backup-index=10
 
-docdrop.repository.name=DocDrop
-docdrop.application.name=DocDrop
-docdrop.repository.index.file=index.html
+docbox.repository.name=DocBox
+docbox.application.name=DocBox
+docbox.repository.index.file=index.html
 
-docdrop.css.bootstrap.dist.url=http://localhost/dist/bootstrap-5.3.1/css/bootstrap.css
-docdrop.css.url=http://localhost/dist/docdrop.css
+docbox.css.bootstrap.dist.url=http://localhost/dist/bootstrap-5.3.1/css/bootstrap.css
+docbox.css.url=http://localhost/dist/docbox.css
 
-docdrop.views.artifacts.index.url=http://localhost/artifacts
-docdrop.views.upload.url=http://localhost:8080/upload.html
-docdrop.views.status.url=http://localhost:8080/status.html
+docbox.views.artifacts.index.url=http://localhost/artifacts
+docbox.views.upload.url=http://localhost:8080/upload.html
+docbox.views.status.url=http://localhost:8080/status.html
 
-docdrop.artifact.storage.location=c:/Temp
+docbox.artifact.storage.location=c:/Temp
 
-docdrop.commands.7z.location=C:/Github/loefflo/docdrop/Binaries/Windows/7z/7za.exe
-docdrop.commands.tar.location=/usr/bin/tar
-docdrop.commands.unzip.location=/usr/bin/unzip
+docbox.commands.7z.location=C:/Github/loefflo/docbox/Binaries/Windows/7z/7za.exe
+docbox.commands.tar.location=/usr/bin/tar
+docbox.commands.unzip.location=/usr/bin/unzip
