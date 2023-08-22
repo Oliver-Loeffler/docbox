@@ -124,10 +124,12 @@
                 <input type="hidden" name="action" value="emptyIngestDir">
                 <button type="submit" class="btn btn-warning form-control">Clean Ingest Directory</button>
             </form>
+            {#if config.allowRepositoryDrop()}
             <form action="status.html" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="action" value="emptyArtifactsDir">
                 <button type="submit" class="btn btn-danger form-control">Drop Repository</button>
             </form>
+            {/if}
         </div>
         <div>
     </main>

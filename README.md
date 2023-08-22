@@ -30,28 +30,43 @@
 
 ## Configuration
 
-* The application is configured using Quarkus `application.properties`
+* The application is configured using Quarkus `application.properties`. Some properties can be modified using environment variables.
+
+Following environment variables are available:
+
+| Env Variable Name                 | Values                                    | Description |
+|-----------------------------------|-------------------------------------------|-------------|
+| `DOCDROP_REPOSITORY_ACTIONS_DROP` | `YES`,`NO`                                | When configured with `YES`, the status page will allow repository deletion. |
+| `DOCDROP_HOSTURL`                 | `http://localhost`, `http://yourhostname` | There must be no port number. Just have the protocol and your hostname there. The value is used to create the URLs in the static index pages. |
+| `APACHE_HTTPD_PORT`               | `80`, `8080`, any port you assign         | Inside Docker container the Apache HTTPD always runs on port 80. Outside the Docker container it might be another port. Configure this specific port here. The value is used to create the URLs in the static index pages. |
+| `TEMP`                            | `/var/log`                                | The application logfiles will be placed into `${TEMP}/docdrop/docdrop.log`. Change this variable to place the application logs at a different location. |
 
 Following options exist:
 
-| Configuration key                   | Description                       | Example     |
-|-------------------------------------|-----------------------------------|-------------|
-| `docdrop.repository.name`           | App name                          | DocDrop     |
-| `docdrop.repository.index.file`     | Name of directory index files.    | index.html  |
-| `docdrop.css.bootstrap.dist.url`    | full URL of `bootstrap.css`       |             |
-| `docdrop.css.url`                   | DocDrop custom CSS: `docdrop.css` |             |
-| `docdrop.views.artifacts.index.url` | Artifact index root URL           | http://localhost/artifacts        |
-| `docdrop.views.upload.url`          | Location of upload.html           | http://localhost:8080/upload.html |
-| `docdrop.views.status.url`          | Location of status.html           | http://localhost:8080/status.html |
-| `docdrop.artifact.storage.location` | Volume for artifact storage       | `C:\Temp`         |
-| `docdrop.commands.7z.location`      | 7za Executable                    | `C:\Test\7za.exe` |
-| `docdrop.commands.tar.location`     | TAR Executable                    | `/usr/bin/tar`    |
-| `docdrop.commands.unzip.location`   | UNZIP Executable                  | `/usr/bin/unzip`  |
+| Configuration key                   | Description                                     | Example     |
+|-------------------------------------|-------------------------------------------------|-------------|
+| `apache.httpd.port`                 | See env. var: `APACHE_HTTPD_PORT`               |             |
+| `docdrop.host.url`                  | See env. var: `DOCDROP_HOSTURL`                 |             |
+| `docdrop.application.name`          | Application name in all generated html files.   | DocDrop     |
+| `docdrop.repository.name`           | Name of the repositor.                          | DocDrop     |
+| `docdrop.repository.index.file`     | Name of directory index files.                  | index.html  |
+| `docdrop.repository.actions.drop`   | See env. var: `DOCDROP_REPOSITORY_ACTIONS_DROP` |             | 
+| `docdrop.css.bootstrap.dist.url`    | full URL of `bootstrap.css`                     |             |
+| `docdrop.css.url`                   | DocDrop custom CSS: `docdrop.css`               |             |
+| `docdrop.views.artifacts.index.url` | Artifact index root URL                         | http://localhost/artifacts        |
+| `docdrop.views.upload.url`          | Location of upload.html                         | http://localhost:8080/upload.html |
+| `docdrop.views.status.url`          | Location of status.html                         | http://localhost:8080/status.html |
+| `docdrop.artifact.storage.location` | Volume for artifact storage                     | `C:\Temp`         |
+| `docdrop.commands.7z.location`      | 7za Executable                                  | `C:\Test\7za.exe` |
+| `docdrop.commands.tar.location`     | TAR Executable                                  | `/usr/bin/tar`    |
+| `docdrop.commands.unzip.location`   | UNZIP Executable                                | `/usr/bin/unzip`  |
 
 ## Running DocDrop
 
 **_Prerequisite_**:
-* Apache httpd must be running and serving contents of `docdrop.artifact.storage.location` 
+* Apache httpd must be running and serving contents of `docdrop.artifact.storage.location`
+
+The Docker image usually takes care of this. When running the application without Docker there must be another program running to serve the static files. All received documentation packages are expected to consist of static pages (may be with some statically served JavaScript included, but not more). 
 
 Starting the Web App:
 * Change into project directory and run `./mvnw compile quarkus:dev`
@@ -60,18 +75,18 @@ Starting the Web App:
 
 > **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at http://localhost:8080/q/dev/.
 
-There is now a first Docker image available. 
+There is now a first Docker image available. The Dev UI is not available from Docker served contents. 
 
 ```shell
-docker pull raumzeitfalle/docdrop:0.3
-docker run -it --name docdrop -p 80:80  -d raumzeitfalle/docdrop:0.3
+docker pull raumzeitfalle/docdrop:0.4
+docker run -it --name docdrop -p 80:80  -d raumzeitfalle/docdrop:0.4
 ```
 
 In some cases, when port 80 is already occupied, one can configure the underlying HTTPD to use another port. Also Quarkus must be aware of the new port:
 
 ```shell
-docker pull raumzeitfalle/docdrop:0.3
-docker run -it --name docdrop -p 8080:80 -e APACHE_HTTPD_PORT="8080" -e DOCDROP_HOSTURL="http://myhostname" -d raumzeitfalle/docdrop:0.3
+docker pull raumzeitfalle/docdrop:0.4
+docker run -it --name docdrop -p 8080:80 -e APACHE_HTTPD_PORT="8080" -e DOCDROP_HOSTURL="http://myhostname" -d raumzeitfalle/docdrop:0.4
 ```
 
 It is now also possible to expose the collected artifacts and the logfiles. The following example applies to Windows:
@@ -82,6 +97,7 @@ docker run -it ^
 -p 8080:80 ^
 -e APACHE_HTTPD_PORT="8080" ^
 -e DOCDROP_HOSTURL=http://localhost ^
+-e DOCDROP_REPOSITORY_ACTIONS_DROP="YES" ^
 -v C:\Temp\docdrop\artifacts:/var/www/html/artifacts/ ^
 -v C:\Temp\docdrop\ingest:/var/www/html/ingest/ ^
 -v C:\Temp\docdrop\logs:/var/log/docdrop/ ^
@@ -97,13 +113,13 @@ docker run -it \
 -p 8080:80 \
 -e APACHE_HTTPD_PORT="8080" \
 -e DOCDROP_HOSTURL=http://localhost \
+-e DOCDROP_REPOSITORY_ACTIONS_DROP="YES" \
 -v C:\Temp\docdrop\artifacts:/var/www/html/artifacts/ \
 -v C:\Temp\docdrop\ingest:/var/www/html/ingest/ \
 -v C:\Temp\docdrop\logs:/var/log/docdrop/ \
 -v C:\Temp\docdrop\logs_httpd:/var/log/httpd/ \
 -d raumzeitfalle/docdrop:0.3
 ```
-
 
 ## Screenshots
 

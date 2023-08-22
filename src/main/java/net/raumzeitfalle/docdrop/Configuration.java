@@ -69,6 +69,9 @@ public class Configuration {
 
     @ConfigProperty(name = "docdrop.repository.index.file", defaultValue = "index.html")
     public String repositoryIndexFile;
+    
+    @ConfigProperty(name = "docdrop.repository.actions.drop")
+    public String repositoryActionsAllowDrop;
 
     @ConfigProperty(name = "docdrop.scm.url", defaultValue = "http://gitbucket/docdrop")
     public String scmUrl;
@@ -92,64 +95,73 @@ public class Configuration {
     }
     
     public String getUploadUrl() {
-        if (apacheHttpdPort != 80) {
-        	return hostUrl+":"+apacheHttpdPort+uploadUrl;	
-        }
-        return hostUrl+uploadUrl;
+        return insertPortIfConfigured(hostUrl, uploadUrl);
     }
     
     public String getStatusUrl() {
-        if (apacheHttpdPort != 80) {
-        	return hostUrl+":"+apacheHttpdPort+statusUrl;	
-        }
-    	return hostUrl+statusUrl;
+    	return insertPortIfConfigured(hostUrl, statusUrl);
     }
 
     public String getArtifactsIndexUrl() {
-        if (apacheHttpdPort != 80) {
-        	return hostUrl+":"+apacheHttpdPort+artifactsIndexUrl;	
-        }
-        return hostUrl+artifactsIndexUrl;
+        return insertPortIfConfigured(hostUrl, artifactsIndexUrl);
     }
     
     public String getCssBootstrapDistUrl() {
-        if (bootstrapCssUrl.toLowerCase().startsWith("http")) {
-            return bootstrapCssUrl;
-        }
-        if (apacheHttpdPort != 80) {
-        	return hostUrl+":"+apacheHttpdPort+bootstrapCssUrl;	
-        }
-        return hostUrl+bootstrapCssUrl;
+        return useAbsoluteUriWhenConfigured(bootstrapCssUrl);
     }
     
     public String getCssDocdropUrl() {
-        if (docdropCssUrl.toLowerCase().startsWith("http")) {
-            return docdropCssUrl;
-        }
-        if (apacheHttpdPort != 80) {
-        	return hostUrl+":"+apacheHttpdPort+docdropCssUrl;	
-        }
-        return hostUrl+docdropCssUrl;
+        return useAbsoluteUriWhenConfigured(docdropCssUrl);
     }
     
     public String getForkRibbonUrl() {
-        if (githubForkCssUrl.toLowerCase().startsWith("http")) {
-            return githubForkCssUrl;
-        }
-        if (apacheHttpdPort != 80) {
-        	return hostUrl+":"+apacheHttpdPort+githubForkCssUrl;	
-        }
-        return hostUrl+githubForkCssUrl;
+        return useAbsoluteUriWhenConfigured(githubForkCssUrl);
     }
     
     public String getUploadEndpointUrl() {
-        if (uploadEndpoint.toLowerCase().startsWith("http")) {
-            return uploadEndpoint;
-        }
-        if (apacheHttpdPort != 80) {
-        	return hostUrl+":"+apacheHttpdPort+uploadEndpoint;	
-        }
-        return hostUrl+uploadEndpoint;
+        return useAbsoluteUriWhenConfigured(uploadEndpoint);
     }
+
+    /**
+	 * When an end point is configured as an absolute URL starting with a protocol,
+	 * than the fully qualified URL is not built from the configured host name.
+	 * 
+	 * @param the desired or configured end point or resource.
+	 * @return {@link String} URL consisting of protocol, host, port and end point
+	 *         or resource definition.
+	 */
+	private String useAbsoluteUriWhenConfigured(String endpoint) {
+		if (endpoint.toLowerCase().startsWith("http")) {
+            return endpoint;
+        }
+        return insertPortIfConfigured(hostUrl, endpoint);
+	}
+
+	/**
+	 * The port is only added to the URL when configured different from port 80.
+	 * 
+	 * @param host     host name as root of URL, {@link String}
+	 * @param endpoint end point or resource to be used, {@link String}
+	 * @return {@link String} URL consisting of host name, port and end point. Port
+	 *         only when different than port 80.
+	 */
+	private String insertPortIfConfigured(String host, String endpoint) {
+		if (apacheHttpdPort != 80) {
+        	return host+":"+apacheHttpdPort+endpoint;	
+        }
+        return host+endpoint;
+	}
+	
+	/**
+	 * Dropping (deleting) the full repository contents is only allowed when the
+	 * corresponding environment variable is set.
+	 * 
+	 * @return boolean true when {@code DOCDROP_REPOSITORY_ACTIONS_DROP} is
+	 *         configured to {@code YES}. When undefined or with another value,
+	 *         deletion of repository is not permitted.
+	 */
+	public boolean allowRepositoryDrop() {
+		return "YES".equalsIgnoreCase(repositoryActionsAllowDrop);
+	}
 
 }
