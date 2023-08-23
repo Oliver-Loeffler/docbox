@@ -50,6 +50,7 @@ ENV TZ=Europe/Berlin
 ENV JAVA_HOME="/usr/lib/jvm/jdk-17.0.8+7"
 
 COPY ./docker/css/application.css /var/www/html/dist/application.css
+COPY ./docker/css/gh-fork-ribbon.min.css /var/www/html/dist/gh-fork-ribbon.min.css
 COPY ./docker/js/darkmode.js /var/www/html/dist/darkmode.js
 COPY ./docker/application.properties /docbox/application.properties
 COPY ./docker/httpd.conf /etc/httpd/conf/httpd.conf

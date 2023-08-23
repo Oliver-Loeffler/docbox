@@ -52,6 +52,12 @@ public class PrepareHttpd {
 		String config = readHttpdConf(backupedHttpdConf);
 		String proxy = conf.replace("DOCBOX_HOSTURL", serverUrl)
 				           .replace("DOCBOX_PORT", docdropPort);
+		
+		if (args.length > 0 && "docker".equalsIgnoreCase(args[0])) {
+			proxy = conf.replace("DOCBOX_HOSTURL", "http://localhost")
+			           	.replace("DOCBOX_PORT", "8080");
+		}
+		
 
 		config = config+System.lineSeparator()+proxy;
 		try {
