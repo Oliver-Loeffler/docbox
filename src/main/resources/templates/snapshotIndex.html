@@ -42,15 +42,21 @@
     <nav class="navbar navbar-expand-sm sticky-top">
         <div class="container-fluid">
             <ul class="navbar-nav">
+				<!-- LEFT //-->
                 <li class="nav-item">
-                    <a class="nav-link" href="../../..">Groups</a>
+                    <a class="nav-link" href="../../..">Groups /</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="../..">{item.groupId}</a>
+                    <a class="nav-link" href="../..">{item.groupId} /</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="..">{item.artifact}</a>
+                    <a class="nav-link" href="..">{item.artifact} /</a>
                 </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href=".">{item.name}</a>
+                </li>
+                
+                <!-- RIGHT //-->
                 <li class="nav-item">
                     <a class="nav-link" href="{config.getUploadUrl()}">Upload artifact...</a>
                 </li>

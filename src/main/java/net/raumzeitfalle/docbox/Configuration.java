@@ -70,7 +70,7 @@ public class Configuration {
     @ConfigProperty(name = "docbox.repository.index.file", defaultValue = "index.html")
     public String repositoryIndexFile;
     
-    @ConfigProperty(name = "docbox.repository.actions.drop")
+    @ConfigProperty(name = "docbox.repository.actions.drop", defaultValue = "NO")
     public String repositoryActionsAllowDrop;
 
     @ConfigProperty(name = "docbox.scm.url", defaultValue = "http://gitbucket/docdrop")
