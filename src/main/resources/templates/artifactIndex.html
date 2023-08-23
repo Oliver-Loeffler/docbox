@@ -20,28 +20,20 @@
 </head>
 <body>
     <a class="github-fork-ribbon right-top fixed" href="https://github.com/Oliver-Loeffler/docdrop" data-ribbon="Fork me on GitHub" title="Fork me on GitHub">Fork me on GitHub</a>
-    <nav class="navbar navbar-expand-sm sticky-top">
-        <div class="container-fluid">
-            <ul class="navbar-nav">
-				<!-- LEFT //-->
-                <li class="nav-item">
-                    <a class="nav-link" href="..">Groups</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href=".">{item.getName()}</a>
-                </li>
-                
-                <!-- RIGHT //-->
-                <li class="nav-item">
-                    <a class="nav-link" href="{config.getUploadUrl()}">Upload artifact...</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{config.getStatusUrl()}">Status</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-    <main>
+	<nav class="navbar navbar-expand-sm sticky-top">
+		<div class="container-fluid">
+			<div class="navbar-collapse collapse" id="navbar">
+				<ul class="navbar-nav me-auto mb-2 mb-sm-0">
+					<li class="nav-item"><a class="nav-link" href="..">Groups</a></li>
+					<li class="nav-item"><a class="nav-link disabled" href=".">{item.getName()}</a></li>
+					|
+					<li class="nav-item"><a class="nav-link" href="{config.getUploadUrl()}">Upload artifact...</a></li>
+					<li class="nav-item"><a class="nav-link" href="{config.getStatusUrl()}">Status</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+	<main>
         <br>
         <!-- <h1>{config.repositoryName}</h1> //-->
         <h1>Group: {item.name}</h1>

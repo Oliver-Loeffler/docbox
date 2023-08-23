@@ -46,9 +46,12 @@ public class Configuration {
     @ConfigProperty(name = "docbox.artifact.storage.location", defaultValue = "data")
     public String artifactStorageRoot;
 
-    @ConfigProperty(name = "docbox.css.bootstrap.dist.url", defaultValue = "/dist/bootstrap-5.3.1/css/bootstrap.css")
+    @ConfigProperty(name = "docbox.css.bootstrap.dist.url", defaultValue = "/dist/bootstrap-5.3.1/css/bootstrap.min.css")
     public String bootstrapCssUrl;
-
+    
+    @ConfigProperty(name = "docbox.js.bootstrap.dist.url", defaultValue = "/dist/bootstrap-5.3.1/js/bootstrap.min.js")
+    public String bootstrapJsUrl;
+    
     @ConfigProperty(name = "docbox.css.url", defaultValue = "/dist/application.css")
     public String docdropCssUrl;
     
@@ -108,6 +111,10 @@ public class Configuration {
     
     public String getCssBootstrapDistUrl() {
         return useAbsoluteUriWhenConfigured(bootstrapCssUrl);
+    }
+    
+    public String getJsBootstrapDistUrl() {
+        return useAbsoluteUriWhenConfigured(bootstrapJsUrl);
     }
     
     public String getCssDocdropUrl() {
