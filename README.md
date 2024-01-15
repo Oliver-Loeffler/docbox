@@ -79,15 +79,15 @@ Starting the Web App:
 There is now a first Docker image available. The Dev UI is not available from Docker served contents. 
 
 ```shell
-docker pull raumzeitfalle/docbox:0.5
-docker run -it --name docbox -p 80:80  -d raumzeitfalle/docbox:0.5
+docker pull raumzeitfalle/docbox:0.5.6
+docker run -it --name docbox -p 80:80  -d raumzeitfalle/docbox:0.5.6
 ```
 
 In some cases, when port 80 is already occupied, one can configure the underlying HTTPD to use another port. Also Quarkus must be aware of the new port:
 
 ```shell
-docker pull raumzeitfalle/docbox:0.5
-docker run -it --name docbox -p 8080:80 -e APACHE_HTTPD_PORT="8080" -e DOCBOX_HOSTURL="http://myhostname" -d raumzeitfalle/docbox:0.5
+docker pull raumzeitfalle/docbox:0.5.6
+docker run -it --name docbox -p 8080:80 -e APACHE_HTTPD_PORT="8080" -e DOCBOX_HOSTURL="http://myhostname" -d raumzeitfalle/docbox:0.5.6
 ```
 
 It is now also possible to expose the collected artifacts and the logfiles. The following example applies to Windows:

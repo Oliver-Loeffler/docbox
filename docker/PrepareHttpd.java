@@ -66,6 +66,19 @@ public class PrepareHttpd {
 		} catch (IOException e) {
 			LOG.log(Level.SEVERE, "Failed to write httpd configuration in: %s".formatted(httpdConf),e);
 		}
+		
+		createHttpdLogDirIfNeeded();
+	}
+
+	private static void createHttpdLogDirIfNeeded() {
+		Path logDir = Path.of("/var/log/httpd");
+		if (Files.notExists(logDir)) {
+			try {
+				Files.createDirectories(logDir);
+			} catch (IOException e) {
+				LOG.log(Level.SEVERE, "Failed to create httpd log directory: %s".formatted(logDir),e);
+			}
+		}
 	}
 
 	private static Path createBackup(Path httpdConf) {
