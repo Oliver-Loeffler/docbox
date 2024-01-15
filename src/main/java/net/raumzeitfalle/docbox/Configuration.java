@@ -81,9 +81,16 @@ public class Configuration {
     
     @ConfigProperty(name = "docbox.css.forkmegit.url", defaultValue = "https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css")
     public String githubForkCssUrl;
-    
+        
     @ConfigProperty(name = "apache.httpd.port")
     public int apacheHttpdPort;
+    
+    @ConfigProperty(name = "docbox.views.show.forkmegit", defaultValue = "true")
+    public boolean showGithubFork;
+    
+    public boolean showForkMeAtGithub() {
+    	return showGithubFork;
+    }
 
     public Path getArtifactsDirectory() {
         return getStorageRoot().resolve("artifacts");

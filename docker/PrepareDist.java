@@ -15,12 +15,25 @@ public class PrepareDist {
 	
 	private static final Path TARGET_DIR = Path.of("/var/www/html/dist");
 	
+	private static final Path INGEST_DIR = Path.of("/var/www/html/ingest");
+	
 	public static void main(String[] args) {
 		new PrepareDist().run();
 	}
 
 	public void run() {
 		copyDistContents();
+		createIngestDirIfNeeded();
+	}
+	
+	private void createIngestDirIfNeeded() {
+		if (Files.notExists(INGEST_DIR)) {
+			try {
+				Files.createDirectories(INGEST_DIR);
+			} catch (IOException e) {
+				LOG.log(Level.SEVERE, "Failed to create ingest directory! %s".formatted(INGEST_DIR), e);
+			}
+		}
 	}
 
 	private void copyDistContents() {
