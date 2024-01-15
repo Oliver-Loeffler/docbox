@@ -35,7 +35,8 @@ RUN rm -rf /etc/localtime && \
     ln -s /usr/share/zoneinfo/Europe/Berlin /etc/localtime
 
 RUN mkdir -p /docbox && \
-    mkdir -p /var/www/html/dist/ && \
+	mkdir -p /docbox/dist && \
+    mkdir -p /var/www/html/dist && \
     mkdir -p /var/www/html/ingest && \
     mkdir -p /var/www/html/artifacts && \
     mkdir -p /var/log/docbox
@@ -44,21 +45,24 @@ RUN cd install && \
     wget "https://github.com/twbs/bootstrap/releases/download/v5.3.1/bootstrap-5.3.1-dist.zip" && \
     mkdir -p /var/www/html/dist && \
     unzip -o bootstrap-5.3.1-dist.zip -d /install && \
-    mv /install/bootstrap-5.3.1-dist /var/www/html/dist/bootstrap-5.3.1
+    cp -r /install/bootstrap-5.3.1-dist /var/www/html/dist/bootstrap-5.3.1 && \
+    cp -r /install/bootstrap-5.3.1-dist /docbox/dist/bootstrap-5.3.1
 
 ENV TZ=Europe/Berlin
 ENV JAVA_HOME="/usr/lib/jvm/jdk-17.0.8+7"
 
-COPY ./docker/css/application.css /var/www/html/dist/application.css
-COPY ./docker/css/gh-fork-ribbon.min.css /var/www/html/dist/gh-fork-ribbon.min.css
-COPY ./docker/js/darkmode.js /var/www/html/dist/darkmode.js
+COPY ./docker/css/application.css /docbox/dist/application.css
+COPY ./docker/css/gh-fork-ribbon.min.css /docbox/dist/gh-fork-ribbon.min.css
+COPY ./docker/js/darkmode.js /docbox/dist/darkmode.js
+
 COPY ./docker/application.properties /docbox/application.properties
 COPY ./docker/httpd.conf /etc/httpd/conf/httpd.conf
 COPY ./target/quarkus-app /docbox
-COPY ./docker/PrepareHttpd.java /docbox 
+COPY ./docker/PrepareHttpd.java /docbox
+COPY ./docker/PrepareDist.java /docbox 
 
 ENV DOCBOX_HOSTURL=http://localhost
-ENV TEMP=/var/log/docbox
+ENV TEMP=/var/log/quarkus
 
 ADD ./docker/entrypoint.sh /entrypoint.sh
 
@@ -66,10 +70,7 @@ CMD ["sh", "./entrypoint.sh"]
 
 EXPOSE 80
 
-VOLUME /var/www/html/ingest/
-VOLUME /var/www/html/artifacts/
-VOLUME /var/www/html/dist/
-VOLUME /var/log/httpd/
-VOLUME /var/log/docbox/
+VOLUME /var/www/html/
+VOLUME /var/log/
 VOLUME /docbox/
 

@@ -99,11 +99,9 @@ docker run -it ^
 -e APACHE_HTTPD_PORT="8080" ^
 -e DOCBOX_HOSTURL=http://localhost ^
 -e DOCBOX_REPOSITORY_ACTIONS_DROP="YES" ^
--v C:\Temp\docbox\artifacts:/var/www/html/artifacts/ ^
--v C:\Temp\docbox\ingest:/var/www/html/ingest/ ^
--v C:\Temp\docbox\logs:/var/log/docbox/ ^
--v C:\Temp\docbox\logs_httpd:/var/log/httpd/ ^
--d raumzeitfalle/docbox:0.5
+-v C:\Temp\docbox:/var/www/html/ ^
+-v C:\Temp\logs:/var/log/ ^
+-d raumzeitfalle/docbox:0.5.6
 ```
 
 For Linux it would look like:
@@ -115,11 +113,9 @@ docker run -it \
 -e APACHE_HTTPD_PORT="8080" \
 -e DOCBOX_HOSTURL=http://localhost \
 -e DOCBOX_REPOSITORY_ACTIONS_DROP="YES" \
--v C:\Temp\docbox\artifacts:/var/www/html/artifacts/ \
--v C:\Temp\docbox\ingest:/var/www/html/ingest/ \
--v C:\Temp\docbox\logs:/var/log/docbox/ \
--v C:\Temp\docbox\logs_httpd:/var/log/httpd/ \
--d raumzeitfalle/docbox:0.5
+-v /storage/docbox:/var/www/html/artifacts/ \
+-v /storage/logs/docbox:/var/log/ \
+-d raumzeitfalle/docbox:0.5.6
 ```
 
 ## Screenshots

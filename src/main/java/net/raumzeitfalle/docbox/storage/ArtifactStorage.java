@@ -205,5 +205,4 @@ public class ArtifactStorage {
             LOG.log(Level.SEVERE, "Deletion of directory failed.", e);
         }
     }
-
 }
