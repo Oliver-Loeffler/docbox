@@ -55,10 +55,26 @@ public class ArtifactStorageInitializer {
     @PostConstruct
     public void createDataRootIndexFile() throws IOException {
         String uploadUrl = configuration.getUploadUrl();
-        Path fileName = configuration.getStorageRoot().resolve("index.html");
+        var storageRoot = configuration.getStorageRoot().toAbsolutePath();
+        if (Files.notExists(storageRoot)) {
+        	LOG.log(Level.INFO, "Creating storage root directory: {0}", storageRoot);
+        	Files.createDirectories(configuration.getStorageRoot());
+        }
+        Path fileName = storageRoot.resolve("index.html");
         LOG.log(Level.INFO, "Writing repository index: {0}", fileName.toAbsolutePath());
         String html = rootIndex.instance().data("forwardurl", uploadUrl).render();
         Files.write(fileName, html.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE);
+    }
+    
+    @PostConstruct
+    public void createDataIngestDirectory() throws IOException {
+        var ingestDir = configuration.getIngestDirectory().toAbsolutePath();
+        if (Files.notExists(ingestDir)) {
+        	LOG.log(Level.INFO, "Creating ingest directory: {0}", ingestDir);
+        	Files.createDirectories(ingestDir);
+        } else {
+        	LOG.log(Level.INFO, "Detected ingest directory: {0}", ingestDir);
+        }
     }
     
 }
