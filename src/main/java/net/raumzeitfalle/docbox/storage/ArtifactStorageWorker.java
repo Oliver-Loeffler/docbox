@@ -1,6 +1,6 @@
 /*-
  * #%L
- * docdrop
+ * docbox
  * %%
  * Copyright (C) 2023 Oliver Loeffler, Raumzeitfalle.net
  * %%
@@ -42,7 +42,7 @@ public class ArtifactStorageWorker {
     private final Executor cachedThreadPool;
 
     ArtifactStorageWorker(Vertx vertx) {
-        executor = vertx.createSharedWorkerExecutor("docdrop-storage-worker");
+        executor = vertx.createSharedWorkerExecutor("docbox-storage-worker");
         cachedThreadPool = Executors.newCachedThreadPool();
     }
 

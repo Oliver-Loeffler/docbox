@@ -1,6 +1,6 @@
 /*-
  * #%L
- * docdrop
+ * docbox
  * %%
  * Copyright (C) 2023 Oliver Loeffler, Raumzeitfalle.net
  * %%

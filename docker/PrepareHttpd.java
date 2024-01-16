@@ -1,6 +1,6 @@
 /*-
  * #%L
- * docdrop
+ * docbox
  * %%
  * Copyright (C) 2023 Oliver Loeffler, Raumzeitfalle.net
  * %%
@@ -31,7 +31,7 @@ public class PrepareHttpd {
 	private static final Logger LOG = Logger.getLogger(PrepareHttpd.class.getName());
 	public static void main(String[] args) {
 		String serverUrl = getServerUrl();
-		String docdropPort = getServerPort();
+		String docboxPort = getServerPort();
 		String conf = """
 		ProxyPass /upload DOCBOX_HOSTURL:DOCBOX_PORT/upload
         ProxyPassReverse /upload DOCBOX_HOSTURL:DOCBOX_PORT/upload
@@ -51,7 +51,7 @@ public class PrepareHttpd {
 				
 		String config = readHttpdConf(backupedHttpdConf);
 		String proxy = conf.replace("DOCBOX_HOSTURL", serverUrl)
-				           .replace("DOCBOX_PORT", docdropPort);
+				           .replace("DOCBOX_PORT", docboxPort);
 		
 		if (args.length > 0 && "docker".equalsIgnoreCase(args[0])) {
 			proxy = conf.replace("DOCBOX_HOSTURL", "http://localhost")

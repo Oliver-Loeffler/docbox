@@ -1,6 +1,6 @@
 /*-
  * #%L
- * docdrop
+ * docbox
  * %%
  * Copyright (C) 2023 Oliver Loeffler, Raumzeitfalle.net
  * %%
@@ -53,7 +53,7 @@ public class Configuration {
     public String bootstrapJsUrl;
     
     @ConfigProperty(name = "docbox.css.url", defaultValue = "/dist/application.css")
-    public String docdropCssUrl;
+    public String docboxCssUrl;
     
     @ConfigProperty(name = "docbox.commands.7z.location", defaultValue = "C:\\Program Files\\7-Zip\\7z.exe")
     public String commandSevenZipLocation;
@@ -76,7 +76,7 @@ public class Configuration {
     @ConfigProperty(name = "docbox.repository.actions.drop", defaultValue = "NO")
     public String repositoryActionsAllowDrop;
 
-    @ConfigProperty(name = "docbox.scm.url", defaultValue = "http://gitbucket/docdrop")
+    @ConfigProperty(name = "docbox.scm.url", defaultValue = "http://gitbucket/docbox")
     public String scmUrl;
     
     @ConfigProperty(name = "docbox.css.forkmegit.url", defaultValue = "https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css")
@@ -125,7 +125,7 @@ public class Configuration {
     }
     
     public String getCssDocdropUrl() {
-        return useAbsoluteUriWhenConfigured(docdropCssUrl);
+        return useAbsoluteUriWhenConfigured(docboxCssUrl);
     }
     
     public String getForkRibbonUrl() {
