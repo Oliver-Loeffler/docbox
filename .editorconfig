@@ -1,3 +1,4 @@
+# EditorConfig is awesome: https://EditorConfig.org
 root = true
 
 [*]
@@ -6,5 +7,17 @@ insert_final_newline = true
 
 [*.{java,html,css,js}]
 charset = utf-8
+indent_style = space
+indent_size = 4
+
+[*.fxml]
+indent_style = space
+indent_size = 2
+
+[*.yml]
+indent_style = space
+indent_size = 2
+
+[pom.xml]
 indent_style = space
 indent_size = 4

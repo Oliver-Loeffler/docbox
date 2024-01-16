@@ -77,7 +77,7 @@ public class ArtifactStorage {
 
     public java.nio.file.Path prepareStorage(Artifact input) throws IOException {
         LOG.log(Level.INFO, "Preparing directories for artifact [{0}] version [{1}] in group [{2}] (snapshot: {3}).",
-                new Object[] {input.artifactName(), input.version(), input.groupId(), input.snapshot()});
+                new Object[] {input.artifactName(), input.version(), input.groupId(), input.snapshot() });
 
         java.nio.file.Path targetDir = configuration.getArtifactsDirectory();
         var groupDir = targetDir.resolve(input.groupId());
@@ -101,9 +101,7 @@ public class ArtifactStorage {
             return Optional.empty();
         }
 
-        unpackCommand.get()
-                     .configure(configuration)
-                     .accept(source, storage);
+        unpackCommand.get().configure(configuration).accept(source, storage);
 
         generateMetaForwardForEmptyDirectory(target.getParent());
 
@@ -119,7 +117,8 @@ public class ArtifactStorage {
                 LOG.log(Level.INFO, "Createing meta forward via index.html in [{0}]", target);
                 String subDir = files.get(0).getFileName().toString();
                 String forward = META_FORWARD_TEMPLATE.replace("{folder}", subDir);
-                Files.write(target.resolve("index.html"), forward.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE);
+                Files.write(target.resolve("index.html"), forward.getBytes(StandardCharsets.UTF_8),
+                        StandardOpenOption.CREATE);
             }
         } catch (IOException ioError) {
             LOG.log(Level.WARNING, "Failed to create meta forward via index.html in: [%s]".formatted(target), ioError);
@@ -138,28 +137,26 @@ public class ArtifactStorage {
 
     public List<String> collectGroups() {
         try (Stream<java.nio.file.Path> items = Files.list(configuration.getArtifactsDirectory())) {
-            return items.filter(IndexGenerator::isValidDirectory)
-                        .map(java.nio.file.Path::getFileName)
-                        .map(java.nio.file.Path::toString)
-                        .collect(Collectors.toList());
+            return items.filter(IndexGenerator::isValidDirectory).map(java.nio.file.Path::getFileName)
+                    .map(java.nio.file.Path::toString).collect(Collectors.toList());
         } catch (Exception e) {
             return Collections.emptyList();
         }
     }
 
     public void dropArtifacts() {
-    	if (configuration.allowRepositoryDrop()) {
-    		Path artifactsRoot = configuration.getArtifactsDirectory();
-    		try (Stream<java.nio.file.Path> items = Files.list(artifactsRoot)) {
-    			items.forEach(this::delete);
-    			LOG.log(Level.INFO, "Dropped repository contents.");
-    		} catch (Exception e) {
-    			LOG.log(Level.SEVERE, "Deletion of repository item failed.", e);
-    		}    		
-    	} else {
-    		LOG.log(Level.INFO, "Dropping the repository contents is not permitted. Skipping operation.");
-    	}
-    	
+        if (configuration.allowRepositoryDrop()) {
+            Path artifactsRoot = configuration.getArtifactsDirectory();
+            try (Stream<java.nio.file.Path> items = Files.list(artifactsRoot)) {
+                items.forEach(this::delete);
+                LOG.log(Level.INFO, "Dropped repository contents.");
+            } catch (Exception e) {
+                LOG.log(Level.SEVERE, "Deletion of repository item failed.", e);
+            }
+        } else {
+            LOG.log(Level.INFO, "Dropping the repository contents is not permitted. Skipping operation.");
+        }
+
     }
 
     public void dropIngestedArtifacts() {

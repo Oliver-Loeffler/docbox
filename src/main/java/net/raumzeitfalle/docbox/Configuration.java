@@ -29,11 +29,11 @@ import jakarta.inject.Singleton;
 public class Configuration {
 
     @ConfigProperty(name = "docbox.host.url")
-    public String hostUrl; 
-    
+    public String hostUrl;
+
     @ConfigProperty(name = "docbox.views.upload.url", defaultValue = "/upload.html")
     public String uploadUrl;
-    
+
     @ConfigProperty(name = "docbox.endpoints.upload.url", defaultValue = "/upload")
     public String uploadEndpoint;
 
@@ -48,13 +48,13 @@ public class Configuration {
 
     @ConfigProperty(name = "docbox.css.bootstrap.dist.url", defaultValue = "/dist/bootstrap-5.3.1/css/bootstrap.min.css")
     public String bootstrapCssUrl;
-    
+
     @ConfigProperty(name = "docbox.js.bootstrap.dist.url", defaultValue = "/dist/bootstrap-5.3.1/js/bootstrap.min.js")
     public String bootstrapJsUrl;
-    
+
     @ConfigProperty(name = "docbox.css.url", defaultValue = "/dist/application.css")
     public String docboxCssUrl;
-    
+
     @ConfigProperty(name = "docbox.commands.7z.location", defaultValue = "C:\\Program Files\\7-Zip\\7z.exe")
     public String commandSevenZipLocation;
 
@@ -72,24 +72,24 @@ public class Configuration {
 
     @ConfigProperty(name = "docbox.repository.index.file", defaultValue = "index.html")
     public String repositoryIndexFile;
-    
+
     @ConfigProperty(name = "docbox.repository.actions.drop", defaultValue = "NO")
     public String repositoryActionsAllowDrop;
 
     @ConfigProperty(name = "docbox.scm.url", defaultValue = "http://gitbucket/docbox")
     public String scmUrl;
-    
+
     @ConfigProperty(name = "docbox.css.forkmegit.url", defaultValue = "https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css")
     public String githubForkCssUrl;
-        
+
     @ConfigProperty(name = "apache.httpd.port")
     public int apacheHttpdPort;
-    
+
     @ConfigProperty(name = "docbox.views.show.forkmegit", defaultValue = "true")
     public boolean showGithubFork;
-    
+
     public boolean showForkMeAtGithub() {
-    	return showGithubFork;
+        return showGithubFork;
     }
 
     public Path getArtifactsDirectory() {
@@ -99,83 +99,83 @@ public class Configuration {
     public Path getIngestDirectory() {
         return getStorageRoot().resolve("ingest");
     }
-    
+
     public Path getStorageRoot() {
         return Path.of(artifactStorageRoot);
     }
-    
+
     public String getUploadUrl() {
         return insertPortIfConfigured(hostUrl, uploadUrl);
     }
-    
+
     public String getStatusUrl() {
-    	return insertPortIfConfigured(hostUrl, statusUrl);
+        return insertPortIfConfigured(hostUrl, statusUrl);
     }
 
     public String getArtifactsIndexUrl() {
         return insertPortIfConfigured(hostUrl, artifactsIndexUrl);
     }
-    
+
     public String getCssBootstrapDistUrl() {
         return useAbsoluteUriWhenConfigured(bootstrapCssUrl);
     }
-    
+
     public String getJsBootstrapDistUrl() {
         return useAbsoluteUriWhenConfigured(bootstrapJsUrl);
     }
-    
+
     public String getCssDocdropUrl() {
         return useAbsoluteUriWhenConfigured(docboxCssUrl);
     }
-    
+
     public String getForkRibbonUrl() {
         return useAbsoluteUriWhenConfigured(githubForkCssUrl);
     }
-    
+
     public String getUploadEndpointUrl() {
         return useAbsoluteUriWhenConfigured(uploadEndpoint);
     }
 
     /**
-	 * When an end point is configured as an absolute URL starting with a protocol,
-	 * than the fully qualified URL is not built from the configured host name.
-	 * 
-	 * @param the desired or configured end point or resource.
-	 * @return {@link String} URL consisting of protocol, host, port and end point
-	 *         or resource definition.
-	 */
-	private String useAbsoluteUriWhenConfigured(String endpoint) {
-		if (endpoint.toLowerCase().startsWith("http")) {
+     * When an end point is configured as an absolute URL starting with a protocol,
+     * than the fully qualified URL is not built from the configured host name.
+     * 
+     * @param the desired or configured end point or resource.
+     * @return {@link String} URL consisting of protocol, host, port and end point
+     *         or resource definition.
+     */
+    private String useAbsoluteUriWhenConfigured(String endpoint) {
+        if (endpoint.toLowerCase().startsWith("http")) {
             return endpoint;
         }
         return insertPortIfConfigured(hostUrl, endpoint);
-	}
+    }
 
-	/**
-	 * The port is only added to the URL when configured different from port 80.
-	 * 
-	 * @param host     host name as root of URL, {@link String}
-	 * @param endpoint end point or resource to be used, {@link String}
-	 * @return {@link String} URL consisting of host name, port and end point. Port
-	 *         only when different than port 80.
-	 */
-	private String insertPortIfConfigured(String host, String endpoint) {
-		if (apacheHttpdPort != 80) {
-        	return host+":"+apacheHttpdPort+endpoint;	
+    /**
+     * The port is only added to the URL when configured different from port 80.
+     * 
+     * @param host     host name as root of URL, {@link String}
+     * @param endpoint end point or resource to be used, {@link String}
+     * @return {@link String} URL consisting of host name, port and end point. Port
+     *         only when different than port 80.
+     */
+    private String insertPortIfConfigured(String host, String endpoint) {
+        if (apacheHttpdPort != 80) {
+            return host + ":" + apacheHttpdPort + endpoint;
         }
-        return host+endpoint;
-	}
-	
-	/**
-	 * Dropping (deleting) the full repository contents is only allowed when the
-	 * corresponding environment variable is set.
-	 * 
-	 * @return boolean true when {@code DOCDROP_REPOSITORY_ACTIONS_DROP} is
-	 *         configured to {@code YES}. When undefined or with another value,
-	 *         deletion of repository is not permitted.
-	 */
-	public boolean allowRepositoryDrop() {
-		return "YES".equalsIgnoreCase(repositoryActionsAllowDrop);
-	}
+        return host + endpoint;
+    }
+
+    /**
+     * Dropping (deleting) the full repository contents is only allowed when the
+     * corresponding environment variable is set.
+     * 
+     * @return boolean true when {@code DOCDROP_REPOSITORY_ACTIONS_DROP} is
+     *         configured to {@code YES}. When undefined or with another value,
+     *         deletion of repository is not permitted.
+     */
+    public boolean allowRepositoryDrop() {
+        return "YES".equalsIgnoreCase(repositoryActionsAllowDrop);
+    }
 
 }

@@ -23,15 +23,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public enum Platform {
-    WINDOWS,
-    LINUX,
-    OTHER;
-    
+    WINDOWS, LINUX, OTHER;
+
     public static Platform from(String osName) {
         if (osName != null) {
-        	if (osName.toLowerCase().contains("nux")) {
-        		return LINUX;
-        	}
+            if (osName.toLowerCase().contains("nux")) {
+                return LINUX;
+            }
             if (osName.toLowerCase().contains("win")) {
                 return WINDOWS;
             }
@@ -39,9 +37,9 @@ public enum Platform {
         }
         throw new IllegalArgumentException("Failed to detect operating system! " + osName);
     }
-    
+
     private static Platform thisSystem = null;
-    
+
     public static Platform get() {
         if (thisSystem == null) {
             thisSystem = Platform.from(System.getProperty("os.name").toLowerCase());
