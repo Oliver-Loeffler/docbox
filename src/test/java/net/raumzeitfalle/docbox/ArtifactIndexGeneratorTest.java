@@ -64,7 +64,9 @@ public class ArtifactIndexGeneratorTest extends TestArtifactStorage {
         config.applicationName = "Application Name";
         config.repositoryName = "Repository";
         config.scmUrl = "http://gitbucket/DocDrop";
-        config.uploadUrl = "http://localhost:8080/upload.html";
+        config.uploadUrl = "/upload.html";
+        config.hostUrl = "http://localhost";
+        config.apacheHttpdPort = 8080;
         config.bootstrapCssUrl = "http://localhost/dist/css/styles.css";
 
         classUnderTest = new ArtifactIndexGenerator(targetDir);
@@ -99,7 +101,9 @@ public class ArtifactIndexGeneratorTest extends TestArtifactStorage {
         config.applicationName = "Application Name";
         config.repositoryName = "Repository";
         config.scmUrl = "http://gitbucket/DocDrop";
-        config.uploadUrl = "http://localhost:8080/upload.html";
+        config.uploadUrl = "/upload.html";
+        config.hostUrl = "http://localhost";
+        config.apacheHttpdPort = 80;
         config.bootstrapCssUrl = "http://localhost/dist/css/styles.css";
 
         classUnderTest = new ArtifactIndexGenerator(targetDir);
@@ -114,7 +118,7 @@ public class ArtifactIndexGeneratorTest extends TestArtifactStorage {
                 <H3>group2</H3>
                 <SPAN>Root: TestData/01_artifacts_groups/group2</SPAN>
                 <SPAN>HasParent: true</SPAN>
-                <SPAN>Upload URL: http://localhost:8080/upload.html</SPAN>
+                <SPAN>Upload URL: http://localhost/upload.html</SPAN>
                 <SPAN>CSS URL: http://localhost/dist/css/styles.css</SPAN>
                 <SPAN>SCM URL: http://gitbucket/DocDrop</SPAN>
                 <SPAN>Repository: Repository</SPAN>

@@ -61,7 +61,9 @@ public class GroupIndexGeneratorTest extends TestArtifactStorage {
         config.applicationName = "Application Name";
         config.repositoryName = "Repository";
         config.scmUrl = "http://gitbucket/DocDrop";
-        config.uploadUrl = "http://localhost:8080/upload.html";
+        config.uploadUrl = "/upload.html";
+        config.hostUrl = "http://localhost";
+        config.apacheHttpdPort = 8080;
         config.bootstrapCssUrl = "http://localhost/dist/css/styles.css";
 
         classUnderTest = new GroupIndexGenerator(targetDir, "Group IDs");
