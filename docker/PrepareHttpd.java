@@ -33,18 +33,18 @@ public class PrepareHttpd {
 		String serverUrl = getServerUrl();
 		String docboxPort = getServerPort();
 		String conf = """
-		ProxyPass /upload DOCBOX_HOSTURL:DOCBOX_PORT/upload
-        ProxyPassReverse /upload DOCBOX_HOSTURL:DOCBOX_PORT/upload
-
-        ProxyPass /upload.html DOCBOX_HOSTURL:DOCBOX_PORT/upload.html
-        ProxyPassReverse /upload.html http://localhost:DOCBOX_PORT/upload.html
-
-        ProxyPass /status DOCBOX_HOSTURL:DOCBOX_PORT/status.html
-        ProxyPassReverse /status DOCBOX_HOSTURL:DOCBOX_PORT/status.html
-
-        ProxyPass /status.html DOCBOX_HOSTURL:DOCBOX_PORT/status.html
-        ProxyPassReverse /status.html DOCBOX_HOSTURL:DOCBOX_PORT/status.html
-		""";
+                      ProxyPass /upload DOCBOX_HOSTURL:DOCBOX_PORT/upload
+                      ProxyPassReverse /upload DOCBOX_HOSTURL:DOCBOX_PORT/upload
+                      
+                      ProxyPass /upload.html DOCBOX_HOSTURL:DOCBOX_PORT/upload.html
+                      ProxyPassReverse /upload.html http://localhost:DOCBOX_PORT/upload.html      
+                      
+                      ProxyPass /status DOCBOX_HOSTURL:DOCBOX_PORT/status.html
+                      ProxyPassReverse /status DOCBOX_HOSTURL:DOCBOX_PORT/status.html
+                      
+                      ProxyPass /status.html DOCBOX_HOSTURL:DOCBOX_PORT/status.html
+                      ProxyPassReverse /status.html DOCBOX_HOSTURL:DOCBOX_PORT/status.html
+                      """;
 		
 		Path httpdConf = Path.of("/etc/httpd/conf/httpd.conf");
 		Path backupedHttpdConf = createBackup(httpdConf);
