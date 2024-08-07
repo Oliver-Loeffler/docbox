@@ -5,8 +5,17 @@ RUN microdnf -y --refresh upgrade \
                 install  \
                 httpd  \
                 tar  \
-                unzip \
+                unzip  \
+                nodejs  \
     && microdnf clean all
+
+ENV NODE_ENV="production"
+RUN microdnf -y --best --nodocs --noplugins \
+                install  \
+                nodejs  \
+    && microdnf clean all \
+    && npm i -g pagefind
+
 
 RUN cd /tmp \
     && curl -L -o OpenJDK17U-jre_x64_linux_hotspot_17.0.12_7.tar.gz https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.12+7/OpenJDK17U-jre_x64_linux_hotspot_17.0.12_7.tar.gz \
@@ -43,6 +52,7 @@ COPY ./target/quarkus-app /docbox
 COPY ./docker/PrepareHttpd.jar /docbox
 COPY ./docker/PrepareDist.jar /docbox
 
+ENV PAGEFIND_SITE=/var/www/html/artifacts/
 ENV DOCBOX_HOSTURL=http://localhost
 ENV TEMP=/var/log/quarkus
 ENV TZ=Europe/Berlin
