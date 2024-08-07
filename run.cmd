@@ -6,4 +6,4 @@ docker run -it ^
 -e DOCBOX_REPOSITORY_ACTIONS_DROP="YES" ^
 -v C:\Temp\docbox:/var/www/html/ ^
 -v C:\Temp\logs:/var/log/ ^
--d raumzeitfalle/docbox:0.5.10
+-d raumzeitfalle/docbox:0.6.0
