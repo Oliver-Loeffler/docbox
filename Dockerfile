@@ -1,4 +1,15 @@
-FROM rockylinux/rockylinux:10-minimal
+FROM raumzeitfalle/graalbuilder-21.0.7/rocky-10:0.1 as builder
+ADD ./src /projects/docbox/src
+ADD ./pom.xml /projects/docbox/pom.xml
+ADD ./docker/PrepareDist.jar /projects/tools/PrepareDist.jar
+ADD ./docker/PrepareHttpd.jar /projects/tools/PrepareHttpd.jar
+WORKDIR /projects/docbox
+RUN mvn verify -Dnative -DskipTests=true -Dlicense.skipAddThirdParty=true -Dlicense.skipDownloadLicenses
+WORKDIR /projects/tools
+RUN native-image -jar PrepareDist.jar PrepareDist && \
+    native-image -jar PrepareHttpd.jar PrepareHttpd
+
+FROM rockylinux/rockylinux:10-minimal as runtime
 
 RUN microdnf -y --refresh upgrade \
     && microdnf -y --best --nodocs --noplugins \
@@ -7,16 +18,6 @@ RUN microdnf -y --refresh upgrade \
                 tar  \
                 unzip  \
     && microdnf clean all
-
-ENV NODE_ENV="production"
-
-RUN cd /tmp \
-    && curl -L -o OpenJDK17U-jre_x64_linux_hotspot_17.0.12_7.tar.gz https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.12+7/OpenJDK17U-jre_x64_linux_hotspot_17.0.12_7.tar.gz \
-    && tar -xf OpenJDK17U-jre_x64_linux_hotspot_17.0.12_7.tar.gz \
-    && rm -f OpenJDK17U-jre_x64_linux_hotspot_17.0.12_7.tar.gz \
-    && mkdir -p /usr/lib/jvm \
-    && mv jdk-17.0.12+7-jre /usr/lib/jvm \
-    && ln -s /usr/lib/jvm/jdk-17.0.12+7-jre/bin/java /usr/local/bin/java
 
 RUN mkdir -p /docbox  \
     && mkdir -p /docbox/dist  \
@@ -46,15 +47,17 @@ COPY ./docker/PrepareHttpd.jar /docbox
 COPY ./docker/PrepareDist.jar /docbox
 COPY ./docker/deploy_bootstrap.sh /docbox
 
-ENV JAVA_HOME="/usr/lib/jvm/jdk-17.0.12+7-jre"
 ENV DOCBOX_HOSTURL=http://localhost
 ENV TEMP=/var/log/quarkus
 ENV TZ=Europe/Berlin
 
 ADD ./docker/entrypoint.sh /docbox/entrypoint.sh
-WORKDIR /docbox
 
-CMD ["sh", "./entrypoint.sh"]
+COPY --from=builder /projects/tools/PrepareDist /docbox/PrepareDist
+COPY --from=builder /projects/tools/PrepareHttpd /docbox/PrepareHttpd
+COPY --from=builder /projects/docbox/target/docbox-0.7.1-SNAPSHOT-runner /docbox/docbox-runner
+
+CMD ["sh", "/docbox/entrypoint.sh"]
 
 EXPOSE 80
 

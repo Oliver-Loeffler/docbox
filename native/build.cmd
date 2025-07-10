@@ -1,0 +1,1 @@
+docker build . -t raumzeitfalle/graalbuilder-21.0.7/rocky-10:0.1

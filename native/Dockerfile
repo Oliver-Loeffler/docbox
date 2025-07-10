@@ -35,6 +35,7 @@ RUN curl -s "https://get.sdkman.io?ci=true" | bash && \
     ln -s /usr/lib/jvm/21.0.7-graal/bin/native-image-configure /usr/local/bin/native-image-configure && \
     ln -s /usr/lib/jvm/21.0.7-graal/bin/jshell /usr/local/bin/jshell && \
     ln -s /usr/lib/jvm/21.0.7-graal/bin/jdeps /usr/local/bin/jdeps && \
+    ln -s /usr/lib/jvm/21.0.7-graal/bin/javac /usr/local/bin/javac && \
     ln -s /usr/lib/jvm/21.0.7-graal/bin/jpackage /usr/local/bin/jpackage && \
     ln -s /usr/lib/jvm/21.0.7-graal/bin/jar /usr/local/bin/jar && \
     ln -s /usr/lib/jvm/21.0.7-graal/bin/jlink /usr/local/bin/jlink && \
@@ -45,5 +46,7 @@ ENV JAVA_HOME=/usr/lib/jvm/21.0.7-graal
 ENV GRAALVM_HOME=/usr/lib/jvm/21.0.7-graal
 ENV MAVEN_HOME=/usr/lib/maven/3.9.9
 
+ADD ./pom.xml /tmp
+RUN (cd /tmp;  mvn dependency:copy-dependencies verify -DskipTests=true -Dlicense.skipAddThirdParty=true -Dlicense.skipDownloadLicenses) 
 
 ENTRYPOINT ["/bin/bash"]
