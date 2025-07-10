@@ -6,9 +6,7 @@ RUN microdnf -y --refresh upgrade \
                 httpd  \
                 tar  \
                 unzip  \
-                nodejs  \
-    && microdnf clean all \
-    && npm i -g pagefind
+    && microdnf clean all
 
 ENV NODE_ENV="production"
 
@@ -49,7 +47,6 @@ COPY ./docker/PrepareDist.jar /docbox
 COPY ./docker/deploy_bootstrap.sh /docbox
 
 ENV JAVA_HOME="/usr/lib/jvm/jdk-17.0.12+7-jre"
-ENV PAGEFIND_SITE=/var/www/html/artifacts/
 ENV DOCBOX_HOSTURL=http://localhost
 ENV TEMP=/var/log/quarkus
 ENV TZ=Europe/Berlin
