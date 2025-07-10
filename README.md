@@ -15,6 +15,9 @@
     * An upload page: http://localhost:8080/upload.html
     * A status page: http://localhost:8080/status.html
 
+## Reminder
+* Pagefind: https://github.com/Pagefind/pagefind/releases
+
 ## Setup:
 
 * Artifacts are supposed to be served by an Apache httpd server (port 80) which respects created `.htaccess` files.
