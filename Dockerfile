@@ -6,7 +6,9 @@ RUN microdnf -y --refresh upgrade \
                 httpd  \
                 tar  \
                 unzip  \
-    && microdnf clean all
+                nodejs  \
+    && microdnf clean all \
+    && npm i -g pagefind
 
 ENV NODE_ENV="production"
 
@@ -18,8 +20,6 @@ RUN cd /tmp \
     && mv jdk-17.0.12+7-jre /usr/lib/jvm \
     && ln -s /usr/lib/jvm/jdk-17.0.12+7-jre/bin/java /usr/local/bin/java
 
-ENV JAVA_HOME="/usr/lib/jvm/jdk-17.0.12+7-jre"
-
 RUN mkdir -p /docbox  \
     && mkdir -p /docbox/dist  \
     && mkdir -p /var/www/html/dist  \
@@ -30,21 +30,25 @@ RUN mkdir -p /docbox  \
 RUN cd /tmp  \
     && curl -L -o bootstrap-5.3.1-dist.zip "https://github.com/twbs/bootstrap/releases/download/v5.3.1/bootstrap-5.3.1-dist.zip"  \
     && mkdir -p /var/www/html/dist  \
+    && mkdir -p /var/docbox/dist \
     && unzip -o bootstrap-5.3.1-dist.zip -d /tmp  \
     && cp -r /tmp/bootstrap-5.3.1-dist /var/www/html/dist/bootstrap-5.3.1  \
     && cp -r /tmp/bootstrap-5.3.1-dist /docbox/dist/bootstrap-5.3.1 \
+    && cp -r /tmp/bootstrap-5.3.1-dist /var/docbox/dist/bootstrap-5.3.1 \
     && rm -rf /tmp/bootstrap-5.3.1-dist \
     && rm -f /tmp/bootstrap-5.3.1-dist.zip
 
-COPY ./docker/css/application.css /docbox/dist/application.css
-COPY ./docker/css/gh-fork-ribbon.min.css /docbox/dist/gh-fork-ribbon.min.css
-COPY ./docker/js/darkmode.js /docbox/dist/darkmode.js
+COPY ./docker/css/application.css /var/docbox/dist/application.css
+COPY ./docker/css/gh-fork-ribbon.min.css /var/docbox/dist/gh-fork-ribbon.min.css
+COPY ./docker/js/darkmode.js /var/docbox/dist/darkmode.js
 COPY ./docker/application.properties /docbox/application.properties
 COPY ./docker/httpd.conf /etc/httpd/conf/httpd.conf
 COPY ./target/quarkus-app /docbox
 COPY ./docker/PrepareHttpd.jar /docbox
 COPY ./docker/PrepareDist.jar /docbox
+COPY ./docker/deploy_bootstrap.sh /docbox
 
+ENV JAVA_HOME="/usr/lib/jvm/jdk-17.0.12+7-jre"
 ENV PAGEFIND_SITE=/var/www/html/artifacts/
 ENV DOCBOX_HOSTURL=http://localhost
 ENV TEMP=/var/log/quarkus
