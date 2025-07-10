@@ -1,4 +1,4 @@
-FROM rockylinux:9.3-minimal
+FROM rockylinux/rockylinux:10-minimal
 
 RUN microdnf -y --refresh upgrade \
     && microdnf -y --best --nodocs --noplugins \
@@ -6,16 +6,9 @@ RUN microdnf -y --refresh upgrade \
                 httpd  \
                 tar  \
                 unzip  \
-                nodejs  \
     && microdnf clean all
 
 ENV NODE_ENV="production"
-RUN microdnf -y --best --nodocs --noplugins \
-                install  \
-                nodejs  \
-    && microdnf clean all \
-    && npm i -g pagefind
-
 
 RUN cd /tmp \
     && curl -L -o OpenJDK17U-jre_x64_linux_hotspot_17.0.12_7.tar.gz https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.12+7/OpenJDK17U-jre_x64_linux_hotspot_17.0.12_7.tar.gz \
