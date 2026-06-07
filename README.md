@@ -1,3 +1,14 @@
+#  [docbox](https://codeberg.org/Oliver-Loeffler/docbox) just moved to [Codeberg.org](Codeberg.org)
+
+This repository has been moved to [Codeberg.org](https://codeberg.org/Oliver-Loeffler/docbox).
+There won't be any active development here anymors. So in case of questions / issues. Please visit codeberg.org.
+
+Why?
+[Community Maintenance Matters](https://blog.codeberg.org/community-maintenance-matters.html)
+
+---
+
+
 # docbox
 
 ## Sharing documentation artifacts from CI/CD
